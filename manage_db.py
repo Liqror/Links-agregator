@@ -6,7 +6,7 @@ DBASE = "source.db"
 def connector(func):
     def wrapper(*args, **kwargs):
         conn = sqlite3.connect(DBASE)
-        conn.execute('''PRAGMA foreign_keys = 1''')
+        conn.execute('''PRAGMA foreign_keys = on''')
         try:
             res = func(conn, *args, **kwargs)
         except KeyboardInterrupt:
@@ -26,6 +26,8 @@ def create_db(conn):
     cur.execute('''CREATE TABLE IF NOT EXISTS THEMES
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
         NAME            TEXT);''')
+
+    cur.execute('''INSERT OR IGNORE INTO THEMES (ID, NAME) VALUES (0, "<unknown>")''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS RESOURCES
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,11 +92,11 @@ def add_record(conn, tpe, path, description, theme = 0, source = 0, tags = []):
 
 
 @connector
-def delete_res(conn, table, row_id):
+def delete_record(conn, table, row_id):
     cur = conn.cursor()
     cur.execute(f'''DELETE FROM {table} WHERE ID = {row_id}''')
 
 
 create_db()
 add_record("link", "path", "something", 0, 0, ["python", "c", "sql"])
-delete_res("RESOURCES", 12)
+delete_record("RESOURCES", 4)
