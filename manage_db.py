@@ -9,7 +9,7 @@ def connector(func):
         conn.execute('''PRAGMA foreign_keys = on''')
         try:
             res = func(conn, *args, **kwargs)
-        except KeyboardInterrupt:
+        except Exception:
             conn.rollback()
         else:
             conn.commit()
@@ -78,7 +78,8 @@ def add_tag(conn, name):
 
 
 @connector
-def add_record(conn, tpe, path, description, theme = 0, source = 0, tags = []):
+def add_record(conn, tpe, path, description, theme = 0, source = 0, tags = None):
+    tags = []
     resource_id = add_resource(tpe, path, description, theme, source)
     cur = conn.cursor()
     for tag in tags:
@@ -97,6 +98,9 @@ def delete_record(conn, table, row_id):
     cur.execute(f'''DELETE FROM {table} WHERE ID = {row_id}''')
 
 
-create_db()
-add_record("link", "path", "something", 0, 0, ["python", "c", "sql"])
-delete_record("RESOURCES", 4)
+@connector
+def load_table(conn, table):
+    cur = conn.cursor()
+    cur.execute(f'''SELECT * FROM {table}''')
+    rows = cur.fetchall()
+    return rows
