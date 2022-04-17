@@ -1,7 +1,8 @@
 import sys
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from orig import Ui_MainWindow
 from manage_db import *
+from record import Record
 
 
 class ThemeWidget(QtWidgets.QFrame):
@@ -22,11 +23,14 @@ class ThemeWidget(QtWidgets.QFrame):
 class RecordWidget(QtWidgets.QFrame):
     def __init__ (self, parent = None):
         super(RecordWidget, self).__init__(parent)
-        self.setStyleSheet("background: #5E5EEC;\n"
-                           "border-radius: 20px;")
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(11)
+        self.setFont(font)
         self.textQVBoxLayout = QtWidgets.QVBoxLayout()
         self.textUpQLabel = QtWidgets.QLabel()
         self.textDownQLabel = QtWidgets.QLabel()
+        self.textTags = QtWidgets.QHBoxLayout()
         self.textSource = QtWidgets.QLabel()
         self.textDate = QtWidgets.QLabel()
         self.entryData = QtWidgets.QHBoxLayout()
@@ -34,18 +38,16 @@ class RecordWidget(QtWidgets.QFrame):
         self.entryData.addWidget(self.textSource)
         self.entryData.addWidget(self.textDate)
         self.textQVBoxLayout.addLayout(self.entryData)
-        self.textQVBoxLayout.addWidget(self.textDownQLabel)
+        self.textQVBoxLayout.addLayout(self.textTags)
         self.allQHBoxLayout = QtWidgets.QHBoxLayout()
         self.allQHBoxLayout.addLayout(self.textQVBoxLayout)
-        self.textUpQLabel.setStyleSheet('color: rgb(0, 0, 255)')
-        self.textDownQLabel.setStyleSheet('color: rgb(255, 0, 0);')
+        self.labl = QtWidgets.QLabel(self)
         self.setLayout(self.allQHBoxLayout)
+        self.setStyleSheet("background: #5E5EEC;\n"
+                           "border-radius: 15px;")
 
     def setTextUp(self, text):
-        self.textUpQLabel.setText(str(text))
-
-    def setTextDown(self, text):
-        self.textDownQLabel.setText(text)
+        self.textUpQLabel.setText(text)
 
     def setTextSource(self, text):
         self.textSource.setText(str(text))
@@ -53,25 +55,54 @@ class RecordWidget(QtWidgets.QFrame):
     def setTextDate(self, text):
         self.textDate.setText(text)
 
+    def setTextTags(self, tags):
+        for tag_text in tags:
+            self.labl = QtWidgets.QLabel(self)
+            self.labl.setText(tag_text[1])
+            self.textTags.addWidget(self.labl)
+        if not tags:
+            labl = QtWidgets.QLabel()
+            labl.setText(" ")
+            self.textTags.addWidget(labl)
+
+
+class BindedRecordWidget(RecordWidget):
+    def __init__(self, reid):
+        super(BindedRecordWidget, self).__init__()
+        self.ui = RecordWidget()
+        self.data = Record.from_database(reid)
+        self.data.set_tags()
+        self.setTextUp(self.data.theme)
+        self.setTextSource(self.data.source)
+        self.setTextDate(self.data.date)
+        self.setTextTags(self.data.tags)
+
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
         super(Window, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.stack = QtWidgets.QStackedWidget()
         self.rows = load_table("RESOURCES")
         self.view = QtWidgets.QListWidget(self.ui.libraryView)
         self.view.setSpacing(5)
+        self.view.setFixedSize(self.ui.libraryLayout.sizeHint())
         for row in self.rows:
-            self.wid = RecordWidget()
-            self.wid.setTextUp(row[4])
-            self.wid.setTextSource(row[5])
-            self.wid.setTextDate(row[6])
-            self.wid.setTextDown(row[3])
+            self.wid = BindedRecordWidget(row[0])
             self.item = QtWidgets.QListWidgetItem(self.view)
             self.item.setSizeHint(self.wid.sizeHint())
             self.view.addItem(self.item)
             self.view.setItemWidget(self.item, self.wid)
+        self.themes = load_table("THEMES")
+        self.themes_view = QtWidgets.QListWidget(self.ui.listView)
+        for theme in self.themes:
+            wid = ThemeWidget()
+            wid.setThemeName(theme[1])
+            item = QtWidgets.QListWidgetItem(self.themes_view)
+            item.setSizeHint(self.wid.sizeHint())
+            self.themes_view.addItem(item)
+            self.themes_view.setItemWidget(item, wid)
 
  
 def main():

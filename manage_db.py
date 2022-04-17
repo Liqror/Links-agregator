@@ -3,6 +3,7 @@ import sqlite3
 
 DBASE = "source.db"
 
+
 def connector(func):
     def wrapper(*args, **kwargs):
         conn = sqlite3.connect(DBASE)
@@ -25,7 +26,9 @@ def create_db(conn):
 
     cur.execute('''CREATE TABLE IF NOT EXISTS THEMES
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME            TEXT);''')
+        USER            INTEGER,
+        NAME            TEXT,
+        FOREIGN KEY (USER) REFERENCES USERS(ID));''')
 
     cur.execute('''INSERT OR IGNORE INTO THEMES (ID, NAME) VALUES (0, "<unknown>")''')
 
@@ -48,6 +51,11 @@ def create_db(conn):
         TAG       INTEGER,
         FOREIGN KEY (RESOURCE) REFERENCES RESOURCES(ID) ON DELETE CASCADE,
         FOREIGN KEY (TAG) REFERENCES TAGS(ID));''')
+
+    cur.execute('''CREATE TABLE IF NOT EXISTS USERS
+        (ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        NAME            TEXT, 
+        PASSWORD        TEXT);''')
 
 
 @connector
@@ -104,3 +112,22 @@ def load_table(conn, table):
     cur.execute(f'''SELECT * FROM {table}''')
     rows = cur.fetchall()
     return rows
+
+@connector
+def load_row(conn, res_id):
+    cur = conn.cursor()
+    cur.execute(f'''SELECT S.TYPE, S.PATH, S.DESCRIPTION, T.NAME, S.SOURCE, S.DATE FROM RESOURCES S 
+        JOIN THEMES T ON S.THEME = T.ID WHERE S.ID = {res_id}''')
+    row = cur.fetchall()
+    return row[0]
+
+@connector
+def load_tags(conn, res_id):
+    cur = conn.cursor()
+    cur.execute(f'''SELECT C.TAG, T.NAME FROM RECORDS C JOIN TAGS T ON C.TAG = T.ID WHERE C.RESOURCE = {res_id}''')
+    tags = cur.fetchall()
+    return tags
+
+
+tag = load_row(3)
+print(tag)
