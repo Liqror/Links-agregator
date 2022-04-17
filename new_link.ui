@@ -343,7 +343,7 @@ color: rgb(255, 255, 255);</string>
           </font>
          </property>
          <property name="text">
-          <string>Моя библиотека</string>
+          <string>Новая ссылка</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -351,176 +351,177 @@ color: rgb(255, 255, 255);</string>
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="linkFrame">
-         <property name="styleSheet">
-          <string notr="true">background: #5E5EEC;
-border-radius: 20px;</string>
-         </property>
-         <layout class="QVBoxLayout" name="linkLayout">
-          <item>
-           <layout class="QHBoxLayout" name="linkDescription">
-            <item>
-             <widget class="QLabel" name="themeName_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(255, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string>Python</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="linksName_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>GitHub Project</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="dateOfCreation_2">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>20.02.2022</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="tagslLayout">
-            <item>
-             <widget class="QLabel" name="tag_3">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background: #A2A2E8;
-border-radius: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Python</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="tag_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background: #A2A2E8;
-border-radius: 10px;</string>
-              </property>
-              <property name="text">
-               <string>ВвПД</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="tag">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background: #A2A2E8;
-border-radius: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Desktop</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="tagSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="libraryView"/>
+        <layout class="QVBoxLayout" name="descriptionLayout">
+         <item>
+          <layout class="QHBoxLayout" name="typeOfInfLayout">
+           <item>
+            <widget class="QRadioButton" name="docButton">
+             <property name="font">
+              <font>
+               <pointsize>13</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Ссылка</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="linkButton">
+             <property name="font">
+              <font>
+               <pointsize>13</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Документ</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="imgButton">
+             <property name="font">
+              <font>
+               <pointsize>13</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Изображение</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="linkLineEdit">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+           </property>
+           <property name="inputMask">
+            <string/>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="maxLength">
+            <number>32767</number>
+           </property>
+           <property name="placeholderText">
+            <string>Ссылка...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="themeComboBox">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+           </property>
+           <property name="currentText">
+            <string>Тема...</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Тема...</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="tagComboBox">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>Теги...</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="descriptionTextEdit">
+           <property name="font">
+            <font>
+             <pointsize>13</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+           </property>
+           <property name="documentTitle">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string>Описание...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="buttonHorizontalLayout">
+           <item>
+            <widget class="QPushButton" name="backPushButton">
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(42, 42, 68); color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>Назад</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="savePushButton">
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>14</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(42, 42, 68);color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>Сохранить</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
