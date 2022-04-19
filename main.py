@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from orig import Ui_MainWindow
 from manage_db import *
 from record import Record
@@ -58,12 +58,19 @@ class RecordWidget(QtWidgets.QFrame):
     def setTextTags(self, tags):
         for tag_text in tags:
             self.labl = QtWidgets.QLabel(self)
+            self.labl.setStyleSheet("background: #A2A2E8;\n"
+"border-radius: 10px;")
+            self.labl.setMinimumWidth(30)
+            self.labl.setContentsMargins(2, 2, 2, 2)
+            self.labl.setAlignment(QtCore.Qt.AlignCenter)
             self.labl.setText(tag_text[1])
             self.textTags.addWidget(self.labl)
         if not tags:
             labl = QtWidgets.QLabel()
             labl.setText(" ")
             self.textTags.addWidget(labl)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.textTags.addItem(spacerItem1)
 
 
 class BindedRecordWidget(RecordWidget):
@@ -85,17 +92,19 @@ class Window(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.stack = QtWidgets.QStackedWidget()
         self.rows = load_table("RESOURCES")
-        self.view = QtWidgets.QListWidget(self.ui.libraryView)
+        self.view = QtWidgets.QListWidget()
         self.view.setSpacing(5)
-        self.view.setFixedSize(self.ui.libraryLayout.sizeHint())
+        self.view.setBaseSize(self.ui.centralLayout.sizeHint())
         for row in self.rows:
             self.wid = BindedRecordWidget(row[0])
             self.item = QtWidgets.QListWidgetItem(self.view)
             self.item.setSizeHint(self.wid.sizeHint())
             self.view.addItem(self.item)
             self.view.setItemWidget(self.item, self.wid)
+        self.ui.centralLayout.addWidget(self.view)
+        self.ui.centralLayout.addStretch()
         self.themes = load_table("THEMES")
-        self.themes_view = QtWidgets.QListWidget(self.ui.listView)
+        self.themes_view = QtWidgets.QListWidget()
         for theme in self.themes:
             wid = ThemeWidget()
             wid.setThemeName(theme[1])
@@ -103,6 +112,7 @@ class Window(QtWidgets.QMainWindow):
             item.setSizeHint(self.wid.sizeHint())
             self.themes_view.addItem(item)
             self.themes_view.setItemWidget(item, wid)
+        self.ui.themesLayout.addWidget(self.themes_view)
 
  
 def main():

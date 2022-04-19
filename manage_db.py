@@ -127,7 +127,3 @@ def load_tags(conn, res_id):
     cur.execute(f'''SELECT C.TAG, T.NAME FROM RECORDS C JOIN TAGS T ON C.TAG = T.ID WHERE C.RESOURCE = {res_id}''')
     tags = cur.fetchall()
     return tags
-
-
-tag = load_row(3)
-print(tag)
