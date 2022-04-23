@@ -160,4 +160,4 @@ def load_tags(conn, res_id):
 
 config.set_user(1)
 create_db()
-add_record("link2", "path2", "description2", 0, "source2", ["c", "python", "sql"])
+#add_record("link2", "path2", "description2", 0, "source2", ["c", "python", "sql"])
