@@ -62,7 +62,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap>C:/Users/2003n/Downloads/serch.jpg</pixmap>
+            <pixmap>../../../../2003n/Downloads/serch.jpg</pixmap>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -310,6 +310,206 @@ color: rgb(255, 255, 255);</string>
       </layout>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QFrame" name="userThemeFrame">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>280</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(42, 42, 68);</string>
+      </property>
+      <layout class="QVBoxLayout" name="userThemeLayout">
+       <item>
+        <layout class="QHBoxLayout" name="user">
+         <item>
+          <widget class="QLabel" name="userImage">
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-radius: 5px;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>../../../../2003n/Downloads/userdog.jpg</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="userName">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);</string>
+           </property>
+           <property name="text">
+            <string>Kitten</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::AutoText</enum>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="addNewTheme">
+         <item>
+          <widget class="QLabel" name="themeLable">
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: #5E5EEC;
+border-radius: 12px;
+color: rgb(255, 255, 255);</string>
+           </property>
+           <property name="text">
+            <string>Тема</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="plas">
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background: transparent;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>../../../../2003n/Downloads/plas.jpg</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="theme_1">
+         <property name="minimumSize">
+          <size>
+           <width>215</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 1px solid #5E5EEC; 
+
+color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>Python</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="theme_2">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 1px solid #5E5EEC; 
+border-color: #5E5EEC;
+color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>C</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="theme_3">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>11</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 1px solid #5E5EEC; 
+border-color: #5E5EEC;
+color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>Новая тема</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="themeSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="1">
      <widget class="QFrame" name="libraryFrame">
       <property name="maximumSize">
@@ -327,13 +527,13 @@ color: rgb(255, 255, 255);</string>
          <property name="minimumSize">
           <size>
            <width>400</width>
-           <height>40</height>
+           <height>30</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>16777215</height>
+           <height>40</height>
           </size>
          </property>
          <property name="font">
@@ -352,6 +552,12 @@ color: rgb(255, 255, 255);</string>
        </item>
        <item>
         <widget class="QFrame" name="linkFrame">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>120</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">background: #5E5EEC;
 border-radius: 20px;</string>
@@ -520,217 +726,205 @@ border-radius: 10px;</string>
         </widget>
        </item>
        <item>
-        <spacer name="linkSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QFrame" name="userThemeFrame">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>280</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(42, 42, 68);</string>
-      </property>
-      <layout class="QVBoxLayout" name="userThemeLayout">
-       <item>
-        <layout class="QHBoxLayout" name="user">
+        <layout class="QVBoxLayout" name="centralLayout">
          <item>
-          <widget class="QLabel" name="userImage">
-           <property name="maximumSize">
-            <size>
-             <width>60</width>
-             <height>50</height>
-            </size>
+          <widget class="QStackedWidget" name="stackedWidget">
+           <property name="currentIndex">
+            <number>1</number>
            </property>
-           <property name="styleSheet">
-            <string notr="true">border-radius: 5px;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap>C:/Users/2003n/Downloads/userdog.jpg</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="userName">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>15</pointsize>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="text">
-            <string>Kitten</string>
-           </property>
-           <property name="textFormat">
-            <enum>Qt::AutoText</enum>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
+           <widget class="QWidget" name="page"/>
+           <widget class="QWidget" name="page_2">
+            <property name="minimumSize">
+             <size>
+              <width>621</width>
+              <height>0</height>
+             </size>
+            </property>
+            <widget class="QWidget" name="layoutWidget">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>621</width>
+               <height>551</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="descriptionLayout_2">
+              <item>
+               <layout class="QHBoxLayout" name="typeOfInfLayout_2">
+                <item>
+                 <widget class="QRadioButton" name="docButton_2">
+                  <property name="font">
+                   <font>
+                    <pointsize>13</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Ссылка</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="linkButton_2">
+                  <property name="font">
+                   <font>
+                    <pointsize>13</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Документ</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="imgButton_2">
+                  <property name="font">
+                   <font>
+                    <pointsize>13</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Изображение</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="linkLineEdit_2">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+                </property>
+                <property name="inputMask">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="maxLength">
+                 <number>32767</number>
+                </property>
+                <property name="placeholderText">
+                 <string>Ссылка...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="themeComboBox_2">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+                </property>
+                <property name="currentText">
+                 <string>Тема...</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Тема...</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="tagComboBox_2">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Теги...</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="descriptionTextEdit_2">
+                <property name="font">
+                 <font>
+                  <pointsize>13</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">background: #5E5EEC;
+border-radius: 5px;</string>
+                </property>
+                <property name="documentTitle">
+                 <string/>
+                </property>
+                <property name="placeholderText">
+                 <string>Описание...</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="buttonHorizontalLayout_2">
+                <item>
+                 <widget class="QPushButton" name="backPushButton_2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(42, 42, 68); color: rgb(255, 255, 255);</string>
+                  </property>
+                  <property name="text">
+                   <string>Назад</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="savePushButton_2">
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>14</pointsize>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(42, 42, 68);color: rgb(255, 255, 255);</string>
+                  </property>
+                  <property name="text">
+                   <string>Сохранить</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
           </widget>
          </item>
         </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="addNewTheme">
-         <item>
-          <widget class="QLabel" name="themeLable">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background: #5E5EEC;
-border-radius: 12px;
-color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="text">
-            <string>Тема</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="plas">
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background: transparent;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap>C:/Users/2003n/Downloads/plas.jpg</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QPushButton" name="theme_1">
-         <property name="minimumSize">
-          <size>
-           <width>215</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border: 1px solid #5E5EEC; 
-
-color: rgb(255, 255, 255);</string>
-         </property>
-         <property name="text">
-          <string>Python</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="theme_2">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border: 1px solid #5E5EEC; 
-border-color: #5E5EEC;
-color: rgb(255, 255, 255);</string>
-         </property>
-         <property name="text">
-          <string>C</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="theme_3">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">border: 1px solid #5E5EEC; 
-border-color: #5E5EEC;
-color: rgb(255, 255, 255);</string>
-         </property>
-         <property name="text">
-          <string>Новая тема</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="themeSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

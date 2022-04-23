@@ -1,6 +1,7 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
 from orig import Ui_MainWindow
+from config import config
 from manage_db import *
 from record import Record
 
@@ -77,12 +78,12 @@ class BindedRecordWidget(RecordWidget):
     def __init__(self, reid):
         super(BindedRecordWidget, self).__init__()
         self.ui = RecordWidget()
-        self.data = Record.from_database(reid)
-        self.data.set_tags()
-        self.setTextUp(self.data.theme)
-        self.setTextSource(self.data.source)
-        self.setTextDate(self.data.date)
-        self.setTextTags(self.data.tags)
+        self.datas = Record.from_database(reid)
+        self.datas.set_tags()
+        self.setTextUp(self.datas.theme)
+        self.setTextSource(self.datas.source)
+        self.setTextDate(self.datas.date)
+        self.setTextTags(self.datas.tags)
 
 
 class Window(QtWidgets.QMainWindow):
@@ -90,29 +91,50 @@ class Window(QtWidgets.QMainWindow):
         super(Window, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.stack = QtWidgets.QStackedWidget()
-        self.rows = load_table("RESOURCES")
+        self.setWindowTitle(config.app_name)
+        self.stack = QtWidgets.QWidget()
+        self.lay = QtWidgets.QVBoxLayout()
+        self.rows = load_user_records(config.active_user)
         self.view = QtWidgets.QListWidget()
         self.view.setSpacing(5)
-        self.view.setBaseSize(self.ui.centralLayout.sizeHint())
         for row in self.rows:
             self.wid = BindedRecordWidget(row[0])
             self.item = QtWidgets.QListWidgetItem(self.view)
             self.item.setSizeHint(self.wid.sizeHint())
+            self.item.setData(QtCore.Qt.UserRole, self.wid.datas)
             self.view.addItem(self.item)
             self.view.setItemWidget(self.item, self.wid)
-        self.ui.centralLayout.addWidget(self.view)
-        self.ui.centralLayout.addStretch()
+        self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.lay.addWidget(self.view)
+        self.stack.setLayout(self.lay)
+        self.ui.stackedWidget.insertWidget(0, self.view)
+        self.ui.stackedWidget.insertWidget(1, self.ui.widget)
+        self.ui.stackedWidget.setCurrentIndex(0)
         self.themes = load_table("THEMES")
         self.themes_view = QtWidgets.QListWidget()
         for theme in self.themes:
             wid = ThemeWidget()
-            wid.setThemeName(theme[1])
+            wid.setThemeName(theme[2])
             item = QtWidgets.QListWidgetItem(self.themes_view)
             item.setSizeHint(self.wid.sizeHint())
             self.themes_view.addItem(item)
             self.themes_view.setItemWidget(item, wid)
+        self.ui.label.hide()
         self.ui.themesLayout.addWidget(self.themes_view)
+        self.view.itemClicked.connect(self.item_clicked)
+        self.ui.newLinkButton.clicked.connect(self.new_record)
+
+    def item_clicked(self):
+        datas = self.view.item(0).data(QtCore.Qt.UserRole)
+        self.ui.stackedWidget.setCurrentIndex(1)
+        self.ui.backPushButton.clicked.connect(self.go_back)
+
+    def go_back(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+    def new_record(self):
+        self.ui.stackedWidget.setCurrentIndex(1)
+        self.ui.backPushButton.clicked.connect(self.go_back)
 
  
 def main():
