@@ -25,7 +25,7 @@ def create_db(conn):
     cur.execute('''CREATE TABLE IF NOT EXISTS USERS
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
         NAME            TEXT,
-        EMAIL           TEXT,
+        EMAIL           TEXT UNIQUE,
         PASSWORD        TEXT);''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS THEMES
@@ -54,6 +54,39 @@ def create_db(conn):
         FOREIGN KEY (RESOURCE) REFERENCES RESOURCES(ID) ON DELETE CASCADE,
         FOREIGN KEY (TAG) REFERENCES TAGS(ID));''')
 
+    cur.execute('''CREATE TABLE IF NOT EXISTS ACTIVE_USER
+        (id INTEGER PRIMARY KEY CHECK (id = 1),
+        USER INTEGER,
+        FOREIGN KEY (USER) REFERENCES USERS(ID));''')
+
+    cur.execute('''INSERT OR IGNORE INTO USERS (ID, NAME, EMAIL, PASSWORD) VALUES (0, NULL, NULL, NULL)''')
+
+    cur.execute('''INSERT OR IGNORE INTO ACTIVE_USER (id, USER) VALUES (1, 0)''')
+
+
+@connector
+def get_active_user(conn):
+    cur = conn.cursor()
+    cur.execute('''SELECT USER FROM ACTIVE_USER''')
+    user = cur.fetchone()
+    return user[0]
+
+
+@connector
+def set_active_user(conn, user):
+    cur = conn.cursor()
+    cur.execute(f'''UPDATE ACTIVE_USER SET USER = {user} WHERE id = 1''')
+
+
+@connector
+def match_user(conn, email, password):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM USERS WHERE EMAIL = ? and PASSWORD = ?''', (email, password))
+    user = cur.fetchone()
+    if not user:
+        return 0
+    return user[0]
+
 
 @connector
 def add_user(conn, name, email, password):
@@ -66,7 +99,7 @@ def add_user(conn, name, email, password):
 
 
 @connector
-def add_resource(conn, tpe, path, description, theme = 0, source = 0):
+def add_resource(conn, tpe, path, description, theme, source = 0):
     cur = conn.cursor()
     cur.execute('''INSERT INTO RESOURCES (TYPE, PATH, DESCRIPTION, THEME, SOURCE) VALUES (?, ?, ?, ?, ?)''', (tpe, path, description, theme, source))
     cur.execute('''SELECT seq FROM sqlite_sequence WHERE name = "RESOURCES"''')
@@ -75,9 +108,9 @@ def add_resource(conn, tpe, path, description, theme = 0, source = 0):
 
 
 @connector
-def add_theme(conn, name):
+def add_theme(conn, user, name):
     cur = conn.cursor()
-    cur.execute('''INSERT INTO THEMES (USER, NAME) VALUES (?)''', (config.active_user, name))
+    cur.execute('''INSERT INTO THEMES (USER, NAME) VALUES (?)''', (user, name))
     cur.execute('''SELECT seq FROM sqlite_sequence WHERE name = "THEMES"''')
     last = cur.fetchone()
     return last[0]
@@ -93,7 +126,7 @@ def add_tag(conn, name):
 
 
 @connector
-def add_record(conn, tpe, path, description, theme = 0, source = 0, tags = None):
+def add_record(conn, tpe, path, description, theme, source = 0, tags = None):
     if tags is None:
         tags = []
     resource_id = add_resource(tpe, path, description, theme, source)
@@ -158,6 +191,7 @@ def load_tags(conn, res_id):
     tags = cur.fetchall()
     return tags
 
-config.set_user(1)
+
+#config.set_user(1)
 create_db()
 #add_record("link2", "path2", "description2", 0, "source2", ["c", "python", "sql"])

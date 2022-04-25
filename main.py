@@ -1,6 +1,8 @@
 import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
 from orig import Ui_MainWindow
+from reg import Ui_MainWindow as Ui_StartWindow
+from user import cur_user
 from config import config
 from manage_db import *
 from record import Record
@@ -92,37 +94,43 @@ class Window(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle(config.app_name)
-        self.stack = QtWidgets.QWidget()
-        self.lay = QtWidgets.QVBoxLayout()
-        self.rows = load_user_records(config.active_user)
         self.view = QtWidgets.QListWidget()
         self.view.setSpacing(5)
-        for row in self.rows:
-            self.wid = BindedRecordWidget(row[0])
-            self.item = QtWidgets.QListWidgetItem(self.view)
-            self.item.setSizeHint(self.wid.sizeHint())
-            self.item.setData(QtCore.Qt.UserRole, self.wid.datas)
-            self.view.addItem(self.item)
-            self.view.setItemWidget(self.item, self.wid)
+        self.show_records(cur_user.active)
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self.lay.addWidget(self.view)
-        self.stack.setLayout(self.lay)
         self.ui.stackedWidget.insertWidget(0, self.view)
         self.ui.stackedWidget.insertWidget(1, self.ui.widget)
+        self.ui.stackedWidget.insertWidget(2, self.ui.creationWidget)
         self.ui.stackedWidget.setCurrentIndex(0)
-        self.themes = load_table("THEMES")
         self.themes_view = QtWidgets.QListWidget()
-        for theme in self.themes:
-            wid = ThemeWidget()
-            wid.setThemeName(theme[2])
-            item = QtWidgets.QListWidgetItem(self.themes_view)
-            item.setSizeHint(self.wid.sizeHint())
-            self.themes_view.addItem(item)
-            self.themes_view.setItemWidget(item, wid)
+        self.show_themes(cur_user.active)
         self.ui.label.hide()
         self.ui.themesLayout.addWidget(self.themes_view)
         self.view.itemClicked.connect(self.item_clicked)
         self.ui.newLinkButton.clicked.connect(self.new_record)
+
+    def show_records(self, user):
+        self.view.clear()
+        rows = load_user_records(user)
+        for row in rows:
+            widg = BindedRecordWidget(row[0])
+            item = QtWidgets.QListWidgetItem(self.view)
+            item.setSizeHint(widg.sizeHint())
+            item.setData(QtCore.Qt.UserRole, widg.datas)
+            self.view.addItem(item)
+            self.view.setItemWidget(item, widg)
+
+    def show_themes(self, user):
+        self.themes_view.clear()
+        themes = load_user_themes(user)
+        for theme in themes:
+            wid = ThemeWidget()
+            wid.setThemeName(theme[2])
+            item = QtWidgets.QListWidgetItem(self.themes_view)
+            item.setSizeHint(wid.sizeHint())
+            self.themes_view.addItem(item)
+            self.themes_view.setItemWidget(item, wid)
+
 
     def item_clicked(self):
         datas = self.view.item(0).data(QtCore.Qt.UserRole)
@@ -133,14 +141,61 @@ class Window(QtWidgets.QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
 
     def new_record(self):
-        self.ui.stackedWidget.setCurrentIndex(1)
-        self.ui.backPushButton.clicked.connect(self.go_back)
+        self.ui.stackedWidget.setCurrentIndex(2)
+        self.ui.cancelPushButton.clicked.connect(self.go_back)
 
- 
+
+class startWindow(QtWidgets.QMainWindow):
+    def __init__(self) -> None:
+        super(startWindow, self).__init__()
+        self.ui = Ui_StartWindow()
+        self.ui.setupUi(self)
+        self.setWindowTitle(config.app_name)
+        self.ui.registrationPushButton.clicked.connect(self.registration_page)
+        self.ui.entrancePushButton.clicked.connect(self.enter)
+        self.ui.registrationPushButton_2.clicked.connect(self.register)
+
+    def registration_page(self):
+        self.ui.stackedWidget.setCurrentIndex(1)
+
+    def enter(self):
+        email = self.ui.emailLineEdit.text()
+        password = self.ui.passwordLineEdit.text()
+        user = match_user(email, password)
+        if user:
+            cur_user.set_user(user)
+
+    def register(self):
+        name = self.ui.nameLineEdit.text()
+        email = self.ui.emailLineEdit_2.text()
+        password = self.ui.passwordLineEdit_2.text()
+        password_check = self.ui.password2LineEdit.text()
+        if password == password_check:
+            user = add_user(name, email, password)
+            cur_user.set_user(user)
+
+def open_main(user, application, login):
+    if user != 0:
+        login.close()
+        application.show()
+
+def update_user(user):
+    set_active_user(user)
+
+cur_user.register_callback(set_active_user)
+
 def main():
+    cur_user.active = get_active_user()
     app = QtWidgets.QApplication([])
     application = Window()
-    application.show()
+    login = startWindow()
+    cur_user.register_callback(application.show_records)
+    cur_user.register_callback(application.show_themes)
+    cur_user.register_callback(lambda user: open_main(user, application, login))
+    if cur_user.active == 0:
+        login.show()
+    else:
+        application.show()
     sys.exit(app.exec())
 
 
