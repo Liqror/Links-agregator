@@ -145,6 +145,9 @@ border-radius: 10px;
 border-radius: 10px;
 margin-top: 40px;</string>
                 </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -307,7 +310,7 @@ margin-left:10px;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background: #2A2A44;</string>
+            <string notr="true">QFrame {background: #2A2A44;}</string>
            </property>
            <layout class="QVBoxLayout" name="libraryLayout_3">
             <property name="leftMargin">
@@ -328,9 +331,12 @@ margin-left:10px;</string>
                <widget class="QLabel" name="backLabel">
                 <property name="maximumSize">
                  <size>
-                  <width>140</width>
-                  <height>80</height>
+                  <width>100</width>
+                  <height>70</height>
                  </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">margin-left: 10 px;</string>
                 </property>
                 <property name="text">
                  <string/>
@@ -460,6 +466,9 @@ margin-top: 25px;</string>
 border-radius: 10px;
 margin-top: 25px;</string>
                 </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -473,7 +482,7 @@ margin-top: 25px;</string>
             <item>
              <layout class="QHBoxLayout" name="password2HorizontalLayout">
               <item>
-               <widget class="QLineEdit" name="password2LineEdit">
+               <widget class="QLineEdit" name="passwordLineEdit_3">
                 <property name="maximumSize">
                  <size>
                   <width>600</width>
@@ -489,6 +498,9 @@ margin-top: 25px;</string>
                  <string notr="true">background: #A2A2E8;
 border-radius: 10px;
 margin-top: 25px;</string>
+                </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
