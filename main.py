@@ -170,7 +170,36 @@ class startWindow(QtWidgets.QMainWindow):
         email = self.ui.emailLineEdit_2.text()
         password = self.ui.passwordLineEdit_2.text()
         password_check = self.ui.password2LineEdit.text()
-        if password == password_check:
+
+        # ПРОВЕРКА ПОЧТЫ НА ВАЛИДНОСТЬ
+        check_email = 0
+        count, place, Count_for_letter_1, Count_for_letter_2 = 0, 0, 0, 0
+        for i in range(0, len(email)):
+            if email[i] == '@':
+                count += 1
+                place = i
+        error = 0
+        if count == 1:
+            for i in range(0, len(email)):
+                if (not ('a' <= email[i] <= 'z')) and (email[i] != '.' and email[i] != '@'):
+                    error += 1
+                    break
+                else:
+                    if i < place:
+                        Count_for_letter_1 += 1
+                        if ((email[i] == '.' or email[i] == '-') and (
+                                email[i] == email[i + 1] or i == 0 or i == (place - 1))) and (
+                                not ('a' <= email[i] <= 'z')):
+                            error += 1
+                    if i > place:
+                        Count_for_letter_2 += 1
+                        if ((not ('a' <= email[i] <= 'z')) and ((email[i] == '.' or email[i] == '-') and (
+                                email[i] == email[i + 1] or i == place or i == (place + 1)))):
+                            error += 1
+        if Count_for_letter_1 != 0 and Count_for_letter_2 != 0 and error == 0:
+            check_email = 1
+
+        if password == password_check and 4 <= len(password) <= 16 and check_email == 1:
             user = add_user(name, email, password)
             cur_user.set_user(user)
 
