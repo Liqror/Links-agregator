@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1140</width>
-    <height>822</height>
+    <width>1132</width>
+    <height>835</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -378,8 +378,8 @@ color: rgb(255, 255, 255);</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background: #5E5EEC;
-border-radius: 20px;</string>
+          <string notr="true">QFrame {background: #5E5EEC;
+border-radius: 20px;}</string>
          </property>
          <layout class="QVBoxLayout" name="linkLayout">
           <item>
@@ -448,6 +448,23 @@ border-radius: 20px;</string>
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="descriptionLabel">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: #A2A2E8;
+border-radius: 0,5 px;</string>
+            </property>
+            <property name="text">
+             <string>Хороший проект, что сказать)</string>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="tagslLayout">
@@ -987,7 +1004,7 @@ border-radius: 5px;</string>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(42, 42, 68);</string>
+       <string notr="true">QWidget#searchFrame{ background-color: rgb(42, 42, 68);}</string>
       </property>
       <layout class="QVBoxLayout" name="searchLayout">
        <item>
@@ -1038,8 +1055,10 @@ border-radius: 5px;</string>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background: #5E5EEC;
-border-color: #5E5EEC;</string>
+            <string notr="true">QLineEdit {
+background: #A2A2E8;
+border-radius: 10px;
+}</string>
            </property>
            <property name="text">
             <string/>
@@ -1060,15 +1079,14 @@ border-color: #5E5EEC;</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background: #A2A2E8;
-border-radius: 10px;
-padding-left: 90px;
-
-alternate-background-color: rgb(162, 162, 232);
-selection-color: rgb(162, 162, 232);
-selection-background-color: rgb(162, 162, 232);
-background-color: rgb(162, 162, 232);
-gridline-color: rgb(162, 162, 232);
+          <string notr="true">QComboBox {
+	background: #A2A2E8;
+	border-radius: 10px;
+	padding-left: 90px;
+	
+	selection-background-color: ;
+}
+QComboBox QAbstractItemView {background-color: #A2A2E8}
 </string>
          </property>
          <property name="currentText">
