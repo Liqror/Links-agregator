@@ -73,6 +73,15 @@ def get_active_user(conn):
 
 
 @connector
+def get_active_user_name(conn):
+    cur = conn.cursor()
+    user = get_active_user()
+    cur.execute(f'''SELECT NAME FROM USERS WHERE ID = {user}''')
+    name = cur.fetchone()
+    return name[0]
+
+
+@connector
 def set_active_user(conn, user):
     cur = conn.cursor()
     cur.execute(f'''UPDATE ACTIVE_USER SET USER = {user} WHERE id = 1''')

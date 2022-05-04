@@ -1,94 +1,28 @@
 import sys
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from orig import Ui_MainWindow
 from reg import Ui_MainWindow as Ui_StartWindow
 from user import cur_user
 from config import config
 from manage_db import *
-from record import Record
-
-
-class ThemeWidget(QtWidgets.QFrame):
-    def __init__(self, parent = None):
-        super(ThemeWidget, self).__init__(parent)
-        self.setStyleSheet("border: 1px solid #5E5EEC; \n"
-                           "border-color: #5E5EEC;\n"
-                           "color: rgb(255, 255, 255);")
-        self.textQHBox = QtWidgets.QHBoxLayout()
-        self.textTheme = QtWidgets.QLabel()
-        self.textQHBox.addWidget(self.textTheme)
-        self.setLayout(self.textQHBox)
-
-    def setThemeName(self, text):
-        self.textTheme.setText(str(text))
-
-
-class RecordWidget(QtWidgets.QFrame):
-    def __init__ (self, parent = None):
-        super(RecordWidget, self).__init__(parent)
-        font = QtGui.QFont()
-        font.setFamily("Arial")
-        font.setPointSize(11)
-        self.setFont(font)
-        self.textQVBoxLayout = QtWidgets.QVBoxLayout()
-        self.textUpQLabel = QtWidgets.QLabel()
-        self.textDownQLabel = QtWidgets.QLabel()
-        self.textTags = QtWidgets.QHBoxLayout()
-        self.textSource = QtWidgets.QLabel()
-        self.textDate = QtWidgets.QLabel()
-        self.entryData = QtWidgets.QHBoxLayout()
-        self.entryData.addWidget(self.textUpQLabel)
-        self.entryData.addWidget(self.textSource)
-        self.entryData.addWidget(self.textDate)
-        self.textQVBoxLayout.addLayout(self.entryData)
-        self.textQVBoxLayout.addLayout(self.textTags)
-        self.allQHBoxLayout = QtWidgets.QHBoxLayout()
-        self.allQHBoxLayout.addLayout(self.textQVBoxLayout)
-        self.labl = QtWidgets.QLabel(self)
-        self.setLayout(self.allQHBoxLayout)
-        self.setStyleSheet("background: #5E5EEC;\n"
-                           "border-radius: 15px;")
-
-    def setTextUp(self, text):
-        self.textUpQLabel.setText(text)
-
-    def setTextSource(self, text):
-        self.textSource.setText(str(text))
-
-    def setTextDate(self, text):
-        self.textDate.setText(text)
-
-    def setTextTags(self, tags):
-        for tag_text in tags:
-            self.labl = QtWidgets.QLabel(self)
-            self.labl.setStyleSheet("background: #A2A2E8;\n"
-"border-radius: 10px;")
-            self.labl.setMinimumWidth(30)
-            self.labl.setContentsMargins(2, 2, 2, 2)
-            self.labl.setAlignment(QtCore.Qt.AlignCenter)
-            self.labl.setText(tag_text[1])
-            self.textTags.addWidget(self.labl)
-        if not tags:
-            labl = QtWidgets.QLabel()
-            labl.setText(" ")
-            self.textTags.addWidget(labl)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.textTags.addItem(spacerItem1)
-
-
-class BindedRecordWidget(RecordWidget):
-    def __init__(self, reid):
-        super(BindedRecordWidget, self).__init__()
-        self.ui = RecordWidget()
-        self.datas = Record.from_database(reid)
-        self.datas.set_tags()
-        self.setTextUp(self.datas.theme)
-        self.setTextSource(self.datas.source)
-        self.setTextDate(self.datas.date)
-        self.setTextTags(self.datas.tags)
+from widgets import ThemeWidget, BindedRecordWidget
 
 
 class Window(QtWidgets.QMainWindow):
+    '''
+    Главное окно:
+
+    Аттрибуты:
+    view: список записей;
+    themes_view: список тем;
+
+    Методы:
+    show_records: показать список всех записей аккаунта;
+    show_themes: показать список всех тем аккаунта;
+    item_clicked: показать подробную информацию о записи;
+    go_back: вернуться на главную;
+    new_record: перейти к созданию записи;
+    '''
     def __init__(self):
         super(Window, self).__init__()
         self.ui = Ui_MainWindow()
@@ -105,6 +39,7 @@ class Window(QtWidgets.QMainWindow):
         self.themes_view = QtWidgets.QListWidget()
         self.show_themes(cur_user.active)
         self.ui.label.hide()
+        self.ui.userName.setText(get_active_user_name())
         self.ui.themesLayout.addWidget(self.themes_view)
         self.view.itemClicked.connect(self.item_clicked)
         self.ui.newLinkButton.clicked.connect(self.new_record)
@@ -133,7 +68,13 @@ class Window(QtWidgets.QMainWindow):
 
 
     def item_clicked(self):
-        datas = self.view.item(0).data(QtCore.Qt.UserRole)
+        cur_row = self.view.currentRow()
+        themes = [theme[2] for theme in load_user_themes(cur_user.active)]
+        datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
+        self.ui.themeComboBox.addItems(themes)
+        self.ui.themeComboBox.setCurrentText(datas.theme)
+        self.ui.linkLineEdit.setText(datas.path)
+        self.ui.descriptionTextEdit.setText(datas.description)
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.backPushButton.clicked.connect(self.go_back)
 
@@ -145,9 +86,17 @@ class Window(QtWidgets.QMainWindow):
         self.ui.cancelPushButton.clicked.connect(self.go_back)
 
 
-class startWindow(QtWidgets.QMainWindow):
+class StartWindow(QtWidgets.QMainWindow):
+    '''
+    Окно входа и регистрации
+
+    Методы:
+    registration_page: перейти к странице регистрации;
+    enter: войти в аккаунт;
+    register: зарегистрировать аккаунт
+    '''
     def __init__(self) -> None:
-        super(startWindow, self).__init__()
+        super(StartWindow, self).__init__()
         self.ui = Ui_StartWindow()
         self.ui.setupUi(self)
         self.setWindowTitle(config.app_name)
@@ -174,13 +123,12 @@ class startWindow(QtWidgets.QMainWindow):
             user = add_user(name, email, password)
             cur_user.set_user(user)
 
+
 def open_main(user, application, login):
     if user != 0:
         login.close()
         application.show()
 
-def update_user(user):
-    set_active_user(user)
 
 cur_user.register_callback(set_active_user)
 
@@ -188,7 +136,7 @@ def main():
     cur_user.active = get_active_user()
     app = QtWidgets.QApplication([])
     application = Window()
-    login = startWindow()
+    login = StartWindow()
     cur_user.register_callback(application.show_records)
     cur_user.register_callback(application.show_themes)
     cur_user.register_callback(lambda user: open_main(user, application, login))

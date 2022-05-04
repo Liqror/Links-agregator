@@ -1,4 +1,5 @@
 class User():
+    '''Класс для отслеживания активного пользовательского аккаунта'''
     def __init__(self):
         self._active = 0
         self._callbacks = []
