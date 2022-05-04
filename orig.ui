@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1140</width>
-    <height>822</height>
+    <width>1132</width>
+    <height>835</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -378,8 +378,8 @@ color: rgb(255, 255, 255);</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background: #5E5EEC;
-border-radius: 20px;</string>
+          <string notr="true">QFrame {background: #5E5EEC;
+border-radius: 20px;}</string>
          </property>
          <layout class="QVBoxLayout" name="linkLayout">
           <item>
@@ -448,6 +448,23 @@ border-radius: 20px;</string>
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="descriptionLabel">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: #A2A2E8;
+border-radius: 0,5 px;</string>
+            </property>
+            <property name="text">
+             <string>Хороший проект, что сказать)</string>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="tagslLayout">
@@ -987,7 +1004,7 @@ border-radius: 5px;</string>
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(42, 42, 68);</string>
+       <string notr="true">QWidget#searchFrame{ background-color: rgb(42, 42, 68);}</string>
       </property>
       <layout class="QVBoxLayout" name="searchLayout">
        <item>
@@ -1038,9 +1055,15 @@ border-radius: 5px;</string>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">background: #5E5EEC;</string>
+            <string notr="true">QLineEdit {
+background: #A2A2E8;
+border-radius: 10px;
+}</string>
            </property>
            <property name="text">
+            <string/>
+           </property>
+           <property name="placeholderText">
             <string>Поиск</string>
            </property>
           </widget>
@@ -1056,9 +1079,15 @@ border-radius: 5px;</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background: #A2A2E8;
-border-radius: 10px;
-padding-left: 60px;</string>
+          <string notr="true">QComboBox {
+	background: #A2A2E8;
+	border-radius: 10px;
+	padding-left: 90px;
+	
+	selection-background-color: ;
+}
+QComboBox QAbstractItemView {background-color: #A2A2E8}
+</string>
          </property>
          <property name="currentText">
           <string>Тип ресурса</string>
@@ -1086,7 +1115,7 @@ padding-left: 60px;</string>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="tagSearch">
+        <widget class="QLineEdit" name="themeSearch">
          <property name="font">
           <font>
            <family>Arial</family>
@@ -1100,15 +1129,18 @@ border-radius: 10px;
 }</string>
          </property>
          <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="placeholderText">
           <string>Тема</string>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="themeSearch">
+        <widget class="QLineEdit" name="tagSearch">
          <property name="font">
           <font>
            <family>Arial</family>
@@ -1120,15 +1152,18 @@ border-radius: 10px;
 border-radius: 10px;</string>
          </property>
          <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="placeholderText">
           <string>Теги</string>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="description">
+        <widget class="QLineEdit" name="descriptionSearch">
          <property name="font">
           <font>
            <family>Arial</family>
@@ -1140,10 +1175,13 @@ border-radius: 10px;</string>
 border-radius: 10px;</string>
          </property>
          <property name="text">
-          <string>Описание</string>
+          <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+         <property name="placeholderText">
+          <string>Описание</string>
          </property>
         </widget>
        </item>
@@ -1160,10 +1198,13 @@ border-radius: 10px;</string>
 border-radius: 10px;</string>
          </property>
          <property name="text">
-          <string>Источник</string>
+          <string/>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+         <property name="placeholderText">
+          <string>Источник</string>
          </property>
         </widget>
        </item>

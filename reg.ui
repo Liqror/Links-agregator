@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1182</width>
-    <height>730</height>
+    <width>1169</width>
+    <height>733</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,7 +45,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QFrame" name="Frame_2">
@@ -144,6 +144,9 @@ border-radius: 10px;
                  <string notr="true">background: #A2A2E8;
 border-radius: 10px;
 margin-top: 40px;</string>
+                </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -246,6 +249,35 @@ margin-left:10px;</string>
              </layout>
             </item>
             <item>
+             <layout class="QHBoxLayout" name="messageHorizontalLayout">
+              <item>
+               <widget class="QLabel" name="messageLabel">
+                <property name="maximumSize">
+                 <size>
+                  <width>600</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(255, 255, 255);
+</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
              <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -278,7 +310,7 @@ margin-left:10px;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background: #2A2A44;</string>
+            <string notr="true">QFrame {background: #2A2A44;}</string>
            </property>
            <layout class="QVBoxLayout" name="libraryLayout_3">
             <property name="leftMargin">
@@ -294,17 +326,56 @@ margin-left:10px;</string>
              <number>0</number>
             </property>
             <item>
-             <spacer name="verticalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
+             <layout class="QHBoxLayout" name="backHorizontalLayout">
+              <item>
+               <widget class="QLabel" name="backLabel">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">margin-left: 10 px;</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap>Pic/стрелка назад для рег.jpg</pixmap>
+                </property>
+                <property name="scaledContents">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="noneLabel">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="nameHorizontalLayout">
@@ -395,6 +466,9 @@ margin-top: 25px;</string>
 border-radius: 10px;
 margin-top: 25px;</string>
                 </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
+                </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
                 </property>
@@ -408,7 +482,7 @@ margin-top: 25px;</string>
             <item>
              <layout class="QHBoxLayout" name="password2HorizontalLayout">
               <item>
-               <widget class="QLineEdit" name="password2LineEdit">
+               <widget class="QLineEdit" name="passwordLineEdit_3">
                 <property name="maximumSize">
                  <size>
                   <width>600</width>
@@ -424,6 +498,9 @@ margin-top: 25px;</string>
                  <string notr="true">background: #A2A2E8;
 border-radius: 10px;
 margin-top: 25px;</string>
+                </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -470,17 +547,50 @@ margin-left:10px;</string>
              </layout>
             </item>
             <item>
-             <spacer name="verticalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
+             <layout class="QHBoxLayout" name="messageHorizontalLayout_2">
+              <item>
+               <widget class="QLabel" name="messageLabel_2">
+                <property name="maximumSize">
+                 <size>
+                  <width>600</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(255, 255, 255);
+</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_14">
+              <item>
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
