@@ -9,9 +9,13 @@ def open_main(user, application, login):
     if user != 0:
         login.close()
         application.show()
+    else:
+        application.close()
+        login.show()
 
 
 cur_user.register_callback(set_active_user)
+
 
 def main():
     cur_user.active = get_active_user()

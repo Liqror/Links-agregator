@@ -37,6 +37,7 @@ class RecordWidget(QtWidgets.QFrame):
         self.entryData.addWidget(self.textSource)
         self.entryData.addWidget(self.textDate)
         self.deskLab = QtWidgets.QLabel()
+        self.deskLab.setWordWrap(True)
         self.textQVBoxLayout.addLayout(self.entryData)
         self.textQVBoxLayout.addWidget(self.deskLab)
         self.textQVBoxLayout.addLayout(self.textTags)
@@ -89,3 +90,9 @@ class BindedRecordWidget(RecordWidget):
         self.setTextDate(self.datas.date)
         self.setTextDescription(self.datas.description)
         self.setTextTags(self.datas.tags)
+
+
+class TagsHolder(QtWidgets.QLineEdit):
+     def __init__(self, parent = None):
+        super(TagsHolder, self).__init__(parent)
+        self.label = QtWidgets.QLabel()

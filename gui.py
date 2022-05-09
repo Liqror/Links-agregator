@@ -1,4 +1,7 @@
+from posixpath import split
+from sys import set_asyncgen_hooks
 from PyQt5 import QtWidgets, QtCore
+from sympy import source
 from orig import Ui_MainWindow
 from reg import Ui_MainWindow as Ui_StartWindow
 from user import cur_user
@@ -33,18 +36,46 @@ class Window(QtWidgets.QMainWindow):
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.ui.stackedWidget.insertWidget(0, self.view)
         self.ui.stackedWidget.insertWidget(1, self.ui.widget)
-        self.ui.stackedWidget.insertWidget(2, self.ui.creationWidget)
         self.ui.stackedWidget.setCurrentIndex(0)
         self.themes_view = QtWidgets.QListWidget()
         self.show_themes(cur_user.active)
         self.ui.label.hide()
+        self.types_button = {"link": self.ui.linkButton, "doc": self.ui.dockButton, "image": self.ui.imgButton}
         self.ui.userName.setText(get_active_user_name())
         self.ui.themesLayout.addWidget(self.themes_view)
         self.view.itemClicked.connect(self.item_clicked)
         self.ui.newLinkButton.clicked.connect(self.new_record)
+        self.ui.exitAccButton.clicked.connect(self.exit_account)
 
     def show_records(self, user):
         self.view.clear()
+        self.view.setStyleSheet("""
+        QScrollBar:vertical {
+            border-radius:5px;
+            background: #A2A2E8;
+            width:7px;
+            margin: 0px 0px 0px 0px;
+        }
+        QScrollBar::handle:vertical {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop: 0  rgb(42, 42, 68), stop: 0.5  rgb(42, 42, 68), stop:1  rgb(42, 42, 68));
+            min-height: 0px;
+        }
+        QScrollBar::add-line:vertical {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop: 0  rgb(42, 42, 68), stop: 0.5  rgb(42, 42, 68), stop:1  rgb(42, 42, 68));
+            height: 0px;
+            subcontrol-position: bottom;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::sub-line:vertical {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop: 0  rgb(42, 42, 68), stop: 0.5  rgb(42, 42, 68), stop:1  rgb(42, 42, 68));
+            height: 0 px;
+            subcontrol-position: top;
+            subcontrol-origin: margin;
+        }
+        """)
         rows = load_user_records(user)
         for row in rows:
             widg = BindedRecordWidget(row[0])
@@ -65,24 +96,54 @@ class Window(QtWidgets.QMainWindow):
             self.themes_view.addItem(item)
             self.themes_view.setItemWidget(item, wid)
 
-
     def item_clicked(self):
         cur_row = self.view.currentRow()
         themes = [theme[2] for theme in load_user_themes(cur_user.active)]
         datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
+        self.types_button[datas.type].setChecked(True)
         self.ui.themeComboBox.addItems(themes)
         self.ui.themeComboBox.setCurrentText(datas.theme)
         self.ui.linkLineEdit.setText(datas.path)
         self.ui.descriptionTextEdit.setText(datas.description)
+        tags = ""
+        for tag in datas.tags:
+            tags = tags + tag[1] + " "
+        self.ui.tagsLineEdit.setText(tags)
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.backPushButton.clicked.connect(self.go_back)
 
     def go_back(self):
         self.ui.stackedWidget.setCurrentIndex(0)
 
+    def save_new_record(self):
+        path = self.ui.linkLineEdit.text()
+        description = self.ui.descriptionTextEdit.toPlainText()
+        theme = get_theme_id(cur_user.active, self.ui.themeComboBox.currentText())
+        tags = self.ui.tagsLineEdit.text().split()
+        for res, button in self.types_button.items():
+            if button.isChecked():
+                res_type = res
+        source_path = path.split(sep="/")[0]
+        add_record(res_type, path, description, theme, source_path, tags)
+        self.show_records(cur_user.active)
+        self.go_back()
+
     def new_record(self):
-        self.ui.stackedWidget.setCurrentIndex(2)
-        self.ui.cancelPushButton.clicked.connect(self.go_back)
+        self.ui.themeComboBox.clear()
+        for type_button in self.types_button.values():
+            type_button.setChecked(False)
+        themes = [theme[2] for theme in load_user_themes(cur_user.active)]
+        self.ui.themeComboBox.addItems(themes)
+        self.ui.linkLineEdit.clear()
+        self.ui.descriptionTextEdit.clear()
+        self.ui.tagsLineEdit.clear()
+        self.ui.stackedWidget.setCurrentIndex(1)
+        self.ui.backPushButton.clicked.connect(self.go_back)
+        self.ui.savePushButton.clicked.connect(self.save_new_record)
+
+    def exit_account(self):
+        cur_user.set_user(0)
+        self.ui.stackedWidget.setCurrentIndex(0)
 
 
 class StartWindow(QtWidgets.QMainWindow):
@@ -112,6 +173,8 @@ class StartWindow(QtWidgets.QMainWindow):
         user = match_user(email, password)
         if user:
             cur_user.set_user(user)
+            self.ui.emailLineEdit.clear()
+            self.ui.passwordLineEdit.clear()
 
     def register(self):
         name = self.ui.nameLineEdit.text()

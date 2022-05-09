@@ -135,7 +135,7 @@ def add_tag(conn, name):
 
 
 @connector
-def add_record(conn, tpe, path, description, theme, source = 0, tags = None):
+def add_record(conn, tpe, path, description, theme, source = " ", tags = None):
     if tags is None:
         tags = []
     resource_id = add_resource(tpe, path, description, theme, source)
@@ -200,6 +200,13 @@ def load_tags(conn, res_id):
     tags = cur.fetchall()
     return tags
 
+
+@connector
+def get_theme_id(conn, user, theme_name):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM THEMES WHERE USER = ? AND NAME = ?''', (user, theme_name))
+    theme_id = cur.fetchone()
+    return theme_id[0]
 
 #config.set_user(1)
 create_db()

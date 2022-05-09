@@ -253,7 +253,7 @@ color: rgb(255, 255, 255);</string>
         <layout class="QVBoxLayout" name="themesLayout"/>
        </item>
        <item>
-        <widget class="QPushButton" name="theme_1">
+        <widget class="QPushButton" name="exitAccButton">
          <property name="minimumSize">
           <size>
            <width>215</width>
@@ -267,12 +267,12 @@ color: rgb(255, 255, 255);</string>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">border: 1px solid #5E5EEC; 
-
+          <string notr="true">background: #5E5EEC;
+border-radius: 12px;
 color: rgb(255, 255, 255);</string>
          </property>
          <property name="text">
-          <string>Python</string>
+          <string>Выйти из аккаунта</string>
          </property>
         </widget>
        </item>
@@ -569,7 +569,7 @@ border-radius: 10px;</string>
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>2</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page"/>
            <widget class="QWidget" name="page_2">
@@ -609,7 +609,7 @@ border-radius: 10px;</string>
                 <item>
                  <layout class="QHBoxLayout" name="typeOfInfLayout">
                   <item>
-                   <widget class="QRadioButton" name="docButton">
+                   <widget class="QRadioButton" name="linkButton">
                     <property name="font">
                      <font>
                       <pointsize>13</pointsize>
@@ -621,7 +621,7 @@ border-radius: 10px;</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QRadioButton" name="linkButton">
+                   <widget class="QRadioButton" name="dockButton">
                     <property name="font">
                      <font>
                       <pointsize>13</pointsize>
@@ -693,7 +693,22 @@ border-radius: 5px;</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="tagComboBox">
+                 <widget class="QLineEdit" name="tagsLineEdit">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="font">
                    <font>
                     <pointsize>13</pointsize>
@@ -703,11 +718,9 @@ border-radius: 5px;</string>
                    <string notr="true">background: #5E5EEC;
 border-radius: 5px;</string>
                   </property>
-                  <item>
-                   <property name="text">
-                    <string>Теги...</string>
-                   </property>
-                  </item>
+                  <property name="placeholderText">
+                   <string>Теги...</string>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -754,214 +767,6 @@ border-radius: 5px;</string>
                   </item>
                   <item>
                    <widget class="QPushButton" name="savePushButton">
-                    <property name="maximumSize">
-                     <size>
-                      <width>200</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">background-color: rgb(42, 42, 68);color: rgb(255, 255, 255);</string>
-                    </property>
-                    <property name="text">
-                     <string>Сохранить</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-           <widget class="QWidget" name="page_3">
-            <widget class="QWidget" name="creationWidget" native="true">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>531</width>
-               <height>631</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <layout class="QVBoxLayout" name="crDescriptionLayout">
-                <property name="sizeConstraint">
-                 <enum>QLayout::SetDefaultConstraint</enum>
-                </property>
-                <item>
-                 <layout class="QHBoxLayout" name="crTypeOfInfLayout">
-                  <item>
-                   <widget class="QRadioButton" name="crDocButton">
-                    <property name="font">
-                     <font>
-                      <pointsize>13</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Ссылка</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="crLinkButton">
-                    <property name="font">
-                     <font>
-                      <pointsize>13</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Документ</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QRadioButton" name="crImgButton">
-                    <property name="font">
-                     <font>
-                      <pointsize>13</pointsize>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Изображение</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="crLinkLineEdit">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background: #5E5EEC;
-border-radius: 5px;</string>
-                  </property>
-                  <property name="inputMask">
-                   <string/>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="maxLength">
-                   <number>32767</number>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Ссылка...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="themeComboBox_2">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background: #5E5EEC;
-border-radius: 5px;</string>
-                  </property>
-                  <property name="currentText">
-                   <string>Тема...</string>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>Тема...</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="crTagComboBox">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background: #5E5EEC;
-border-radius: 5px;</string>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>Теги...</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QTextEdit" name="crDescriptionTextEdit">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background: #5E5EEC;
-border-radius: 5px;</string>
-                  </property>
-                  <property name="documentTitle">
-                   <string/>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Описание...</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <layout class="QHBoxLayout" name="crButtonLayout">
-                  <item>
-                   <widget class="QPushButton" name="cancelPushButton">
-                    <property name="maximumSize">
-                     <size>
-                      <width>200</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <pointsize>14</pointsize>
-                     </font>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true">background-color: rgb(42, 42, 68); color: rgb(255, 255, 255);</string>
-                    </property>
-                    <property name="text">
-                     <string>Назад</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="crSavePushButton">
                     <property name="maximumSize">
                      <size>
                       <width>200</width>
