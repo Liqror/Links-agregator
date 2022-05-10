@@ -45,7 +45,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QFrame" name="Frame_2">
@@ -482,7 +482,7 @@ margin-top: 25px;</string>
             <item>
              <layout class="QHBoxLayout" name="password2HorizontalLayout">
               <item>
-               <widget class="QLineEdit" name="passwordLineEdit_3">
+               <widget class="QLineEdit" name="password2LineEdit">
                 <property name="maximumSize">
                  <size>
                   <width>600</width>

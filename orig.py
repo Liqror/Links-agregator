@@ -378,7 +378,7 @@ class Ui_MainWindow(object):
         self.searchImage.setMinimumSize(QtCore.QSize(0, 0))
         self.searchImage.setMaximumSize(QtCore.QSize(45, 35))
         self.searchImage.setText("")
-        self.searchImage.setPixmap(QtGui.QPixmap("Pic/еще одна лупа.jpg"))
+        self.searchImage.setPixmap(QtGui.QPixmap("Pic/лупа.jpg"))
         self.searchImage.setScaledContents(True)
         self.searchImage.setObjectName("searchImage")
         self.littleSearchLayout.addWidget(self.searchImage)
@@ -402,15 +402,18 @@ class Ui_MainWindow(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.resourceType.setFont(font)
-        self.resourceType.setStyleSheet("QComboBox {\n"
-"    background: #A2A2E8;\n"
-"    border-radius: 10px;\n"
-"    padding-left: 90px;\n"
-"    \n"
-"    selection-background-color: ;\n"
-"}\n"
-"QComboBox QAbstractItemView {background-color: #A2A2E8}\n"
-"")
+        self.resourceType.setStyleSheet("""
+        QComboBox {
+            background-color: #A2A2E8;
+            border-radius: 10px;
+            padding-left: 90px;
+
+        }
+        QComboBox QAbstractItemView {
+            padding-left: 90px;
+            background-color: #A2A2E8;
+        }
+        """)
         self.resourceType.setObjectName("resourceType")
         self.resourceType.addItem("")
         self.resourceType.addItem("")
