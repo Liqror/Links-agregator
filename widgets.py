@@ -28,7 +28,6 @@ class RecordWidget(QtWidgets.QFrame):
         self.setFont(font)
         self.textQVBoxLayout = QtWidgets.QVBoxLayout()
         self.textUpQLabel = QtWidgets.QLabel()
-        self.textDownQLabel = QtWidgets.QLabel()
         self.textTags = QtWidgets.QHBoxLayout()
         self.textSource = QtWidgets.QLabel()
         self.textDate = QtWidgets.QLabel()
@@ -36,8 +35,13 @@ class RecordWidget(QtWidgets.QFrame):
         self.entryData.addWidget(self.textUpQLabel)
         self.entryData.addWidget(self.textSource)
         self.entryData.addWidget(self.textDate)
-        self.deskLab = QtWidgets.QLabel()
-        self.deskLab.setWordWrap(True)
+        self.deskLab = QtWidgets.QLineEdit()
+        self.deskLab.setEnabled(False)
+        self.deskLab.setStyleSheet("color: black")
+        for lab in self.deskLab, self.textUpQLabel, self.textSource, self.textDate:
+            lab.setFont(self.font())
+        font.setPointSize(10)
+        self.deskLab.setFont(font)
         self.textQVBoxLayout.addLayout(self.entryData)
         self.textQVBoxLayout.addWidget(self.deskLab)
         self.textQVBoxLayout.addLayout(self.textTags)
@@ -59,6 +63,7 @@ class RecordWidget(QtWidgets.QFrame):
 
     def setTextDescription(self, text):
         self.deskLab.setText(text)
+        self.deskLab.setCursorPosition(0)
 
     def setTextTags(self, tags):
         for tag_text in tags:
@@ -69,6 +74,7 @@ class RecordWidget(QtWidgets.QFrame):
             self.labl.setContentsMargins(2, 2, 2, 2)
             self.labl.setAlignment(QtCore.Qt.AlignCenter)
             self.labl.setText(tag_text[1])
+            self.labl.setFont(self.font())
             self.textTags.addWidget(self.labl)
         if not tags:
             labl = QtWidgets.QLabel()

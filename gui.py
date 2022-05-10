@@ -1,7 +1,6 @@
-from posixpath import split
-from sys import set_asyncgen_hooks
-from PyQt5 import QtWidgets, QtCore
-from sympy import source
+import re
+from PyQt5 import QtWidgets, QtCore, QtGui
+from passlib.hash import pbkdf2_sha256
 from orig import Ui_MainWindow
 from reg import Ui_MainWindow as Ui_StartWindow
 from user import cur_user
@@ -32,6 +31,10 @@ class Window(QtWidgets.QMainWindow):
         self.setWindowTitle(config.app_name)
         self.view = QtWidgets.QListWidget()
         self.view.setSpacing(5)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(11)
+        self.view.setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;")
         self.show_records(cur_user.active)
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.ui.stackedWidget.insertWidget(0, self.view)
@@ -40,12 +43,15 @@ class Window(QtWidgets.QMainWindow):
         self.themes_view = QtWidgets.QListWidget()
         self.show_themes(cur_user.active)
         self.ui.label.hide()
+        self.ui.addThemeFrame.hide()
         self.types_button = {"link": self.ui.linkButton, "doc": self.ui.dockButton, "image": self.ui.imgButton}
         self.ui.userName.setText(get_active_user_name())
+        cur_user.register_callback(lambda user: self.ui.userName.setText(get_user_name(user)))
         self.ui.themesLayout.addWidget(self.themes_view)
         self.view.itemClicked.connect(self.item_clicked)
         self.ui.newLinkButton.clicked.connect(self.new_record)
         self.ui.exitAccButton.clicked.connect(self.exit_account)
+        self.ui.plus.clicked.connect(self.add_theme_frame)
 
     def show_records(self, user):
         self.view.clear()
@@ -96,12 +102,30 @@ class Window(QtWidgets.QMainWindow):
             self.themes_view.addItem(item)
             self.themes_view.setItemWidget(item, wid)
 
+    def add_theme_frame(self):
+        self.ui.addThemeFrame.show()
+        self.ui.cancelThemeButton.clicked.connect(self.hide_add_theme)
+        self.ui.saveThemeButton.clicked.connect(self.add_new_theme)
+    
+    def add_new_theme(self):
+        theme = self.ui.lineEdit.text()
+        add_theme(cur_user.active, theme)
+        self.show_themes(cur_user.active)
+        self.refresh_theme_combobox()
+
+    def hide_add_theme(self):
+        self.ui.addThemeFrame.hide()
+
+    def refresh_theme_combobox(self):
+        self.ui.themeComboBox.clear()
+        themes = [theme[2] for theme in load_user_themes(cur_user.active)]
+        self.ui.themeComboBox.addItems(themes)
+
     def item_clicked(self):
         cur_row = self.view.currentRow()
-        themes = [theme[2] for theme in load_user_themes(cur_user.active)]
         datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
         self.types_button[datas.type].setChecked(True)
-        self.ui.themeComboBox.addItems(themes)
+        self.refresh_theme_combobox()
         self.ui.themeComboBox.setCurrentText(datas.theme)
         self.ui.linkLineEdit.setText(datas.path)
         self.ui.descriptionTextEdit.setText(datas.description)
@@ -114,6 +138,12 @@ class Window(QtWidgets.QMainWindow):
 
     def go_back(self):
         self.ui.stackedWidget.setCurrentIndex(0)
+        for type_button in self.types_button.values():
+            type_button.setChecked(False)
+        self.ui.themeComboBox.clear()
+        self.ui.linkLineEdit.clear()
+        self.ui.descriptionTextEdit.clear()
+        self.ui.tagsLineEdit.clear()
 
     def save_new_record(self):
         path = self.ui.linkLineEdit.text()
@@ -123,20 +153,18 @@ class Window(QtWidgets.QMainWindow):
         for res, button in self.types_button.items():
             if button.isChecked():
                 res_type = res
-        source_path = path.split(sep="/")[0]
-        add_record(res_type, path, description, theme, source_path, tags)
+        seps = [".", "://", ":/", ":\\",  "|", "/", ":", "\\", " "]
+        source_path = path
+        for sep in seps[1:]:
+            source_path = source_path.replace(sep, seps[0])
+        source_p = source_path.split(seps[0])
+        add_record(res_type, path, description, theme, source_p[1], tags)
         self.show_records(cur_user.active)
         self.go_back()
 
     def new_record(self):
-        self.ui.themeComboBox.clear()
-        for type_button in self.types_button.values():
-            type_button.setChecked(False)
         themes = [theme[2] for theme in load_user_themes(cur_user.active)]
         self.ui.themeComboBox.addItems(themes)
-        self.ui.linkLineEdit.clear()
-        self.ui.descriptionTextEdit.clear()
-        self.ui.tagsLineEdit.clear()
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.backPushButton.clicked.connect(self.go_back)
         self.ui.savePushButton.clicked.connect(self.save_new_record)
@@ -170,8 +198,9 @@ class StartWindow(QtWidgets.QMainWindow):
     def enter(self):
         email = self.ui.emailLineEdit.text()
         password = self.ui.passwordLineEdit.text()
-        user = match_user(email, password)
-        if user:
+        user = get_user_by_email(email)
+        orig_hash = get_pass_hash(user)
+        if pbkdf2_sha256.verify(password, orig_hash):
             cur_user.set_user(user)
             self.ui.emailLineEdit.clear()
             self.ui.passwordLineEdit.clear()
@@ -211,5 +240,6 @@ class StartWindow(QtWidgets.QMainWindow):
             check_email = 1
 
         if password == password_check and 4 <= len(password) <= 16 and check_email == 1:
-            user = add_user(name, email, password)
+            pass_hash = pbkdf2_sha256.hash(password)
+            user = add_user(name, email, pass_hash)
             cur_user.set_user(user)

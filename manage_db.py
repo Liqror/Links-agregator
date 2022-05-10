@@ -1,4 +1,5 @@
 import sqlite3
+from types import NoneType
 from config import config
 
 
@@ -8,7 +9,7 @@ def connector(func):
         conn.execute('''PRAGMA foreign_keys = on''')
         try:
             res = func(conn, *args, **kwargs)
-        except KeyboardInterrupt:
+        except Exception:
             conn.rollback()
         else:
             conn.commit()
@@ -24,15 +25,16 @@ def create_db(conn):
 
     cur.execute('''CREATE TABLE IF NOT EXISTS USERS
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME            TEXT,
-        EMAIL           TEXT UNIQUE,
-        PASSWORD        TEXT);''')
+        NAME            TEXT NOT NULL,
+        EMAIL           TEXT UNIQUE NOT NULL,
+        PASSWORD        TEXT NOT NULL);''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS THEMES
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
         USER            INTEGER,
         NAME            TEXT,
-        FOREIGN KEY (USER) REFERENCES USERS(ID));''')
+        FOREIGN KEY (USER) REFERENCES USERS(ID), 
+        UNIQUE(USER, NAME));''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS RESOURCES
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,7 +61,7 @@ def create_db(conn):
         USER INTEGER,
         FOREIGN KEY (USER) REFERENCES USERS(ID));''')
 
-    cur.execute('''INSERT OR IGNORE INTO USERS (ID, NAME, EMAIL, PASSWORD) VALUES (0, NULL, NULL, NULL)''')
+    cur.execute('''INSERT OR IGNORE INTO USERS (ID, NAME, EMAIL, PASSWORD) VALUES (0, " ", " ", " ")''')
 
     cur.execute('''INSERT OR IGNORE INTO ACTIVE_USER (id, USER) VALUES (1, 0)''')
 
@@ -76,6 +78,13 @@ def get_active_user(conn):
 def get_active_user_name(conn):
     cur = conn.cursor()
     user = get_active_user()
+    cur.execute(f'''SELECT NAME FROM USERS WHERE ID = {user}''')
+    name = cur.fetchone()
+    return name[0]
+
+@connector
+def get_user_name(conn, user):
+    cur = conn.cursor()
     cur.execute(f'''SELECT NAME FROM USERS WHERE ID = {user}''')
     name = cur.fetchone()
     return name[0]
@@ -119,7 +128,7 @@ def add_resource(conn, tpe, path, description, theme, source = 0):
 @connector
 def add_theme(conn, user, name):
     cur = conn.cursor()
-    cur.execute('''INSERT INTO THEMES (USER, NAME) VALUES (?)''', (user, name))
+    cur.execute('''INSERT INTO THEMES (USER, NAME) VALUES (?, ?)''', (user, name))
     cur.execute('''SELECT seq FROM sqlite_sequence WHERE name = "THEMES"''')
     last = cur.fetchone()
     return last[0]
@@ -191,6 +200,8 @@ def load_user_themes(conn, user):
     cur = conn.cursor()
     cur.execute(f'''SELECT * FROM THEMES WHERE USER = {user}''')
     themes = cur.fetchall()
+    if themes is NoneType:
+        return []
     return themes
 
 @connector
@@ -207,6 +218,23 @@ def get_theme_id(conn, user, theme_name):
     cur.execute('''SELECT ID FROM THEMES WHERE USER = ? AND NAME = ?''', (user, theme_name))
     theme_id = cur.fetchone()
     return theme_id[0]
+
+@connector
+def get_pass_hash(conn, user):
+    cur = conn.cursor()
+    cur.execute('''SELECT PASSWORD FROM USERS WHERE ID = ?''', (user, ))
+    pass_hash = cur.fetchone()
+    return pass_hash[0]
+
+
+@connector
+def get_user_by_email(conn, email):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM USERS WHERE EMAIL = ?''', (email, ))
+    user = cur.fetchone()
+    if not user:
+        return 0
+    return user[0]
 
 #config.set_user(1)
 create_db()
