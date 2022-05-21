@@ -416,23 +416,42 @@ color: rgb(255, 255, 255);</string>
            <enum>QLayout::SetMaximumSize</enum>
           </property>
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QPushButton" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="maximumSize">
              <size>
               <width>40</width>
               <height>40</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">border-style: outset; 
+border-width: 0px;</string>
+            </property>
             <property name="text">
              <string/>
             </property>
-            <property name="textFormat">
-             <enum>Qt::AutoText</enum>
+            <property name="icon">
+             <iconset>
+              <normaloff>Pic/стрелка назад для темы2.jpg</normaloff>
+              <normalon>Pic/стрелка назад для темы2.jpg</normalon>
+              <activeoff>Pic/стрелка назад для темы2.jpg</activeoff>
+              <activeon>Pic/стрелка назад для темы2.jpg</activeon>
+              <selectedoff>Pic/стрелка назад для темы2.jpg</selectedoff>
+              <selectedon>Pic/стрелка назад для темы2.jpg</selectedon>Pic/стрелка назад для темы2.jpg</iconset>
             </property>
-            <property name="pixmap">
-             <pixmap>Pic/стрелка назад для темы2.jpg</pixmap>
+            <property name="iconSize">
+             <size>
+              <width>40</width>
+              <height>40</height>
+             </size>
             </property>
-            <property name="scaledContents">
+            <property name="flat">
              <bool>true</bool>
             </property>
            </widget>

@@ -236,6 +236,14 @@ def get_user_by_email(conn, email):
         return 0
     return user[0]
 
+
+@connector
+def load_theme_records(conn, theme_id):
+    cur = conn.cursor()
+    cur.execute(f'''SELECT * FROM RESOURCES WHERE THEME = {theme_id}''')
+    records = cur.fetchall()
+    return records
+
 #config.set_user(1)
 create_db()
 #add_record("link2", "path2", "description2", 0, "source2", ["c", "python", "sql"])

@@ -35,7 +35,8 @@ class Window(QtWidgets.QMainWindow):
         font.setFamily("Arial")
         font.setPointSize(11)
         self.view.setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;")
-        self.show_records(cur_user.active)
+        self.show_all_records()
+        self.all_records_shown = True
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.ui.stackedWidget.insertWidget(0, self.view)
         self.ui.stackedWidget.insertWidget(1, self.ui.widget)
@@ -44,16 +45,20 @@ class Window(QtWidgets.QMainWindow):
         self.show_themes(cur_user.active)
         self.ui.label.hide()
         self.ui.addThemeFrame.hide()
+        self.ui.linkFrame.hide()
         self.types_button = {"link": self.ui.linkButton, "doc": self.ui.dockButton, "image": self.ui.imgButton}
         self.ui.userName.setText(get_active_user_name())
         cur_user.register_callback(lambda user: self.ui.userName.setText(get_user_name(user)))
         self.ui.themesLayout.addWidget(self.themes_view)
         self.view.itemClicked.connect(self.item_clicked)
+        self.themes_view.itemClicked.connect(self.theme_clicked)
         self.ui.newLinkButton.clicked.connect(self.new_record)
         self.ui.exitAccButton.clicked.connect(self.exit_account)
         self.ui.plus.clicked.connect(self.add_theme_frame)
+        self.ui.label.clicked.connect(self.show_all_records)
+        self.ui.label.clicked.connect(self.back_from_theme)
 
-    def show_records(self, user):
+    def show_records(self, rows):
         self.view.clear()
         self.view.setStyleSheet("""
         QScrollBar:vertical {
@@ -82,7 +87,6 @@ class Window(QtWidgets.QMainWindow):
             subcontrol-origin: margin;
         }
         """)
-        rows = load_user_records(user)
         for row in rows:
             widg = BindedRecordWidget(row[0])
             item = QtWidgets.QListWidgetItem(self.view)
@@ -91,14 +95,49 @@ class Window(QtWidgets.QMainWindow):
             self.view.addItem(item)
             self.view.setItemWidget(item, widg)
 
+    def show_all_records(self):
+        self.ui.nameOfLayout.setText("Моя библиотека")
+        self.all_records_shown = True
+        user = cur_user.active
+        rows = load_user_records(user)
+        self.show_records(rows)
+
     def show_themes(self, user):
         self.themes_view.clear()
         themes = load_user_themes(user)
+        self.themes_view.setStyleSheet("""
+        QScrollBar:vertical {
+            border-radius:5px;
+            background: #A2A2E8;
+            width:7px;
+            margin: 0px 0px 0px 0px;
+        }
+        QScrollBar::handle:vertical {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop: 0  rgb(42, 42, 68), stop: 0.5  rgb(42, 42, 68), stop:1  rgb(42, 42, 68));
+            min-height: 0px;
+        }
+        QScrollBar::add-line:vertical {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop: 0  rgb(42, 42, 68), stop: 0.5  rgb(42, 42, 68), stop:1  rgb(42, 42, 68));
+            height: 0px;
+            subcontrol-position: bottom;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::sub-line:vertical {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+            stop: 0  rgb(42, 42, 68), stop: 0.5  rgb(42, 42, 68), stop:1  rgb(42, 42, 68));
+            height: 0 px;
+            subcontrol-position: top;
+            subcontrol-origin: margin;
+        }
+        """)
         for theme in themes:
             wid = ThemeWidget()
             wid.setThemeName(theme[2])
             item = QtWidgets.QListWidgetItem(self.themes_view)
             item.setSizeHint(wid.sizeHint())
+            item.setData(QtCore.Qt.UserRole, theme)
             self.themes_view.addItem(item)
             self.themes_view.setItemWidget(item, wid)
 
@@ -116,12 +155,22 @@ class Window(QtWidgets.QMainWindow):
     def hide_add_theme(self):
         self.ui.addThemeFrame.hide()
 
+    def theme_clicked(self):
+        cur_row = self.themes_view.currentRow()
+        theme_data = self.themes_view.item(cur_row).data(QtCore.Qt.UserRole)
+        self.ui.nameOfLayout.setText(theme_data[2])
+        rows = load_theme_records(theme_data[0])
+        self.show_records(rows)
+        self.ui.label.show()
+        self.all_records_shown = False
+
     def refresh_theme_combobox(self):
         self.ui.themeComboBox.clear()
         themes = [theme[2] for theme in load_user_themes(cur_user.active)]
         self.ui.themeComboBox.addItems(themes)
 
     def item_clicked(self):
+        self.ui.label.hide()
         cur_row = self.view.currentRow()
         datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
         self.types_button[datas.type].setChecked(True)
@@ -137,6 +186,8 @@ class Window(QtWidgets.QMainWindow):
         self.ui.backPushButton.clicked.connect(self.go_back)
 
     def go_back(self):
+        if not self.all_records_shown:
+            self.ui.label.show()
         self.ui.stackedWidget.setCurrentIndex(0)
         for type_button in self.types_button.values():
             type_button.setChecked(False)
@@ -159,15 +210,22 @@ class Window(QtWidgets.QMainWindow):
             source_path = source_path.replace(sep, seps[0])
         source_p = source_path.split(seps[0])
         add_record(res_type, path, description, theme, source_p[1], tags)
-        self.show_records(cur_user.active)
+        self.show_all_records(cur_user.active)
         self.go_back()
 
     def new_record(self):
+        self.ui.label.hide()
         themes = [theme[2] for theme in load_user_themes(cur_user.active)]
         self.ui.themeComboBox.addItems(themes)
+        if not self.all_records_shown:
+            self.ui.themeComboBox.setCurrentText(self.ui.nameOfLayout.text())
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.backPushButton.clicked.connect(self.go_back)
         self.ui.savePushButton.clicked.connect(self.save_new_record)
+
+    def back_from_theme(self):
+        self.ui.label.hide()
+        self.ui.nameOfLayout.setText(config.library_name)
 
     def exit_account(self):
         cur_user.set_user(0)
