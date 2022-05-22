@@ -9,7 +9,7 @@ def connector(func):
         conn.execute('''PRAGMA foreign_keys = on''')
         try:
             res = func(conn, *args, **kwargs)
-        except Exception:
+        except KeyboardInterrupt:
             conn.rollback()
         else:
             conn.commit()
@@ -182,6 +182,16 @@ def load_row(conn, res_id):
 
 
 @connector
+def load_user_themes(conn, user):
+    cur = conn.cursor()
+    cur.execute(f'''SELECT * FROM THEMES WHERE USER = {user}''')
+    themes = cur.fetchall()
+    if themes is NoneType:
+        return []
+    return themes
+
+
+@connector
 def load_user_records(conn, user):
     cur = conn.cursor()
     rows = load_user_themes(user)
@@ -195,14 +205,6 @@ def load_user_records(conn, user):
     records = cur.fetchall()
     return records
 
-@connector
-def load_user_themes(conn, user):
-    cur = conn.cursor()
-    cur.execute(f'''SELECT * FROM THEMES WHERE USER = {user}''')
-    themes = cur.fetchall()
-    if themes is NoneType:
-        return []
-    return themes
 
 @connector
 def load_tags(conn, res_id):
@@ -217,6 +219,8 @@ def get_theme_id(conn, user, theme_name):
     cur = conn.cursor()
     cur.execute('''SELECT ID FROM THEMES WHERE USER = ? AND NAME = ?''', (user, theme_name))
     theme_id = cur.fetchone()
+    if theme_id is None:
+        return 0
     return theme_id[0]
 
 @connector
@@ -244,6 +248,88 @@ def load_theme_records(conn, theme_id):
     records = cur.fetchall()
     return records
 
+
+@connector
+def get_tags_id(conn, tags):
+    cur = conn.cursor()
+    if not tags:
+        return None
+    tags = tuple(tags)
+    if len(tags) == 1:
+        cur.execute('''SELECT ID FROM TAGS WHERE NAME = ?''', tags)
+    else:
+        cur.execute(f'''SELECT ID FROM TAGS WHERE NAME IN {tags}''')
+    records = cur.fetchall()
+    if records is not None:
+        records = [record[0] for record in records]
+    return records
+
+
+@connector
+def search_by_type(conn, res_type):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM RESOURCES WHERE TYPE = ?''', (res_type, ))
+    records = cur.fetchall()
+    return records
+
+
+@connector
+def search_by_theme(conn, theme_id):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM RESOURCES WHERE THEME = ?''', (theme_id, ))
+    records = cur.fetchall()
+    return records
+
+
+@connector
+def search_by_desc(conn, desc):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM RESOURCES WHERE INSTR(DESCRIPTION, ?) > 0''', (desc, ))
+    records = cur.fetchall()
+    return records
+
+
+@connector
+def search_by_source(conn, res_source):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM RESOURCES WHERE INSTR(SOURCE, ?) > 0''', (res_source, ))
+    records = cur.fetchall()
+    return records
+
+
+@connector
+def search_by_tags(conn, tags):
+    cur = conn.cursor()
+    tags = tuple(tags)
+    if len(tags) == 1:
+        cur.execute('''SELECT RESOURCE FROM RECORDS WHERE TAG = ?''', tags)
+    else:
+        cur.execute(f'''SELECT RESOURCE FROM RECORDS WHERE TAG IN {tags}''')
+    records = cur.fetchall()
+    return records
+
+
+@connector
+def search_by_date(conn, res_date):
+    cur = conn.cursor()
+    cur.execute('''SELECT ID FROM RESOURCES WHERE INSTR(DATE, ?) > 0''', (res_date, ))
+    records = cur.fetchall()
+    return records
+
+
+def search(user: int, res_type: str|None, theme: str|None, desc: str|None, source: str|None, date: str|None, tags: list[str]|None):
+    fields = [(search_by_type, res_type), (search_by_theme, theme), (search_by_desc, desc), (search_by_source, source),
+    (search_by_date, date), (search_by_tags, tags)]
+    results = []
+    for func, arg in fields:
+        if arg is None:
+            results.append(set(load_user_records(user)))
+        else:
+            results.append(set(func(arg)))
+    rows = set.intersection(*results)
+    return rows
+
+
+
 #config.set_user(1)
 create_db()
-#add_record("link2", "path2", "description2", 0, "source2", ["c", "python", "sql"])

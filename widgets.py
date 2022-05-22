@@ -1,3 +1,4 @@
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 from record import Record
 
@@ -90,6 +91,7 @@ class BindedRecordWidget(RecordWidget):
         super(BindedRecordWidget, self).__init__()
         self.ui = RecordWidget()
         self.datas = Record.from_database(reid)
+        self.datas.date = datetime.strptime(self.datas.date, "%Y-%m-%d %H:%M:%S").strftime("%d.%m.%Y %H:%M")
         self.datas.set_tags()
         self.setTextUp(self.datas.theme)
         self.setTextSource(self.datas.source)

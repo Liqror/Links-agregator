@@ -1,4 +1,4 @@
-import re
+from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 from passlib.hash import pbkdf2_sha256
 from orig import Ui_MainWindow
@@ -37,6 +37,7 @@ class Window(QtWidgets.QMainWindow):
         self.view.setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;")
         self.show_all_records()
         self.all_records_shown = True
+        self.cur_theme = config.library_name
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.ui.stackedWidget.insertWidget(0, self.view)
         self.ui.stackedWidget.insertWidget(1, self.ui.widget)
@@ -47,6 +48,7 @@ class Window(QtWidgets.QMainWindow):
         self.ui.addThemeFrame.hide()
         self.ui.linkFrame.hide()
         self.types_button = {"link": self.ui.linkButton, "doc": self.ui.dockButton, "image": self.ui.imgButton}
+        self.types_search = {"Тип ресурса": None, "Ссылка": "link", "Документ": "doc", "Изображение": "image"}
         self.ui.userName.setText(get_active_user_name())
         cur_user.register_callback(lambda user: self.ui.userName.setText(get_user_name(user)))
         self.ui.themesLayout.addWidget(self.themes_view)
@@ -57,6 +59,8 @@ class Window(QtWidgets.QMainWindow):
         self.ui.plus.clicked.connect(self.add_theme_frame)
         self.ui.label.clicked.connect(self.show_all_records)
         self.ui.label.clicked.connect(self.back_from_theme)
+        self.ui.applyButton.clicked.connect(self.apply_search)
+        self.ui.pushButton.clicked.connect(self.clear_search)
 
     def show_records(self, rows):
         self.view.clear()
@@ -96,7 +100,8 @@ class Window(QtWidgets.QMainWindow):
             self.view.setItemWidget(item, widg)
 
     def show_all_records(self):
-        self.ui.nameOfLayout.setText("Моя библиотека")
+        self.cur_theme = config.library_name
+        self.ui.nameOfLayout.setText(self.cur_theme)
         self.all_records_shown = True
         user = cur_user.active
         rows = load_user_records(user)
@@ -158,7 +163,8 @@ class Window(QtWidgets.QMainWindow):
     def theme_clicked(self):
         cur_row = self.themes_view.currentRow()
         theme_data = self.themes_view.item(cur_row).data(QtCore.Qt.UserRole)
-        self.ui.nameOfLayout.setText(theme_data[2])
+        self.cur_theme = theme_data[2]
+        self.ui.nameOfLayout.setText(self.cur_theme)
         rows = load_theme_records(theme_data[0])
         self.show_records(rows)
         self.ui.label.show()
@@ -178,6 +184,7 @@ class Window(QtWidgets.QMainWindow):
         self.ui.themeComboBox.setCurrentText(datas.theme)
         self.ui.linkLineEdit.setText(datas.path)
         self.ui.descriptionTextEdit.setText(datas.description)
+        self.ui.nameOfLayout.setText(datas.date)
         tags = ""
         for tag in datas.tags:
             tags = tags + tag[1] + " "
@@ -188,6 +195,7 @@ class Window(QtWidgets.QMainWindow):
     def go_back(self):
         if not self.all_records_shown:
             self.ui.label.show()
+        self.ui.nameOfLayout.setText(self.cur_theme)
         self.ui.stackedWidget.setCurrentIndex(0)
         for type_button in self.types_button.values():
             type_button.setChecked(False)
@@ -210,7 +218,7 @@ class Window(QtWidgets.QMainWindow):
             source_path = source_path.replace(sep, seps[0])
         source_p = source_path.split(seps[0])
         add_record(res_type, path, description, theme, source_p[1], tags)
-        self.show_all_records(cur_user.active)
+        self.show_all_records()
         self.go_back()
 
     def new_record(self):
@@ -222,6 +230,32 @@ class Window(QtWidgets.QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(1)
         self.ui.backPushButton.clicked.connect(self.go_back)
         self.ui.savePushButton.clicked.connect(self.save_new_record)
+
+    def apply_search(self):
+        res_type = self.types_search[self.ui.resourceType.currentText()]
+        theme = self.ui.themeSearch.text()
+        tags = get_tags_id(self.ui.tagSearch.text().split())
+        desc = self.ui.descriptionSearch.text()
+        source = self.ui.sourceSearch.text()
+        res_date = datetime.strptime(self.ui.dateSearch.text(), "%d.%m.%Y").strftime("%Y-%m-%d")
+        if not theme: theme = None
+        else: theme = get_theme_id(cur_user.active, theme)
+        if not desc: desc = None
+        if not source: source = None
+        if res_date == "2000-01-01": res_date = None
+        print(cur_user.active, res_type, theme, desc, source, res_date, tags)
+        rows = search(cur_user.active, res_type, theme, desc, source, res_date, tags)
+        self.show_records(rows)
+
+    def clear_search(self):
+        self.ui.resourceType.setCurrentIndex(0)
+        self.ui.themeSearch.clear()
+        self.ui.tagSearch.clear()
+        self.ui.descriptionSearch.clear()
+        self.ui.sourceSearch.clear()
+        qdate = QtCore.QDate.fromString("01.01.2000", "dd.MM.yyyy")
+        self.ui.dateSearch.setDate(qdate)
+        self.show_all_records()
 
     def back_from_theme(self):
         self.ui.label.hide()
