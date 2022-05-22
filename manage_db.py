@@ -228,6 +228,8 @@ def get_pass_hash(conn, user):
     cur = conn.cursor()
     cur.execute('''SELECT PASSWORD FROM USERS WHERE ID = ?''', (user, ))
     pass_hash = cur.fetchone()
+    if pass_hash is None:
+        return " "
     return pass_hash[0]
 
 

@@ -45,7 +45,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QFrame" name="Frame_2">
@@ -328,7 +328,7 @@ margin-left:10px;</string>
             <item>
              <layout class="QHBoxLayout" name="backHorizontalLayout">
               <item>
-               <widget class="QLabel" name="backLabel">
+               <widget class="QPushButton" name="pushButton">
                 <property name="maximumSize">
                  <size>
                   <width>100</width>
@@ -336,15 +336,23 @@ margin-left:10px;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">margin-left: 10 px;</string>
+                 <string notr="true">border-style: outset; 
+border-width: 0px;</string>
                 </property>
                 <property name="text">
                  <string/>
                 </property>
-                <property name="pixmap">
-                 <pixmap>Pic/стрелка назад для рег.jpg</pixmap>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>Pic/стрелка назад для рег.jpg</normaloff>Pic/стрелка назад для рег.jpg</iconset>
                 </property>
-                <property name="scaledContents">
+                <property name="iconSize">
+                 <size>
+                  <width>100</width>
+                  <height>70</height>
+                 </size>
+                </property>
+                <property name="flat">
                  <bool>true</bool>
                 </property>
                </widget>
@@ -413,7 +421,7 @@ border-radius: 10px;
             <item>
              <layout class="QHBoxLayout" name="emailHorizontalLayout_2">
               <item>
-               <widget class="QLineEdit" name="emailLineEdit_2">
+               <widget class="QLineEdit" name="emailLineEditReg">
                 <property name="maximumSize">
                  <size>
                   <width>600</width>
@@ -443,7 +451,7 @@ margin-top: 25px;</string>
             <item>
              <layout class="QHBoxLayout" name="passwordHorizontalLayout_2">
               <item>
-               <widget class="QLineEdit" name="passwordLineEdit_2">
+               <widget class="QLineEdit" name="passwordLineEditReg">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
@@ -482,7 +490,7 @@ margin-top: 25px;</string>
             <item>
              <layout class="QHBoxLayout" name="password2HorizontalLayout">
               <item>
-               <widget class="QLineEdit" name="passwordLineEdit_3">
+               <widget class="QLineEdit" name="passwordCheckReg">
                 <property name="maximumSize">
                  <size>
                   <width>600</width>
@@ -515,7 +523,7 @@ margin-top: 25px;</string>
             <item>
              <layout class="QHBoxLayout" name="registrationHorizontalLayout">
               <item>
-               <widget class="QPushButton" name="registrationPushButton_2">
+               <widget class="QPushButton" name="signUpButton">
                 <property name="minimumSize">
                  <size>
                   <width>450</width>

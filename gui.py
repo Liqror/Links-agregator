@@ -35,7 +35,7 @@ class Window(QtWidgets.QMainWindow):
         font.setFamily("Arial")
         font.setPointSize(11)
         self.view.setStyleSheet("font-family: Arial; font-style: normal; font-size: 15pt;")
-        self.show_all_records()
+        self.show_all_records(cur_user.active)
         self.all_records_shown = True
         self.cur_theme = config.library_name
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -99,11 +99,10 @@ class Window(QtWidgets.QMainWindow):
             self.view.addItem(item)
             self.view.setItemWidget(item, widg)
 
-    def show_all_records(self):
+    def show_all_records(self, user):
         self.cur_theme = config.library_name
         self.ui.nameOfLayout.setText(self.cur_theme)
         self.all_records_shown = True
-        user = cur_user.active
         rows = load_user_records(user)
         self.show_records(rows)
 
@@ -218,7 +217,7 @@ class Window(QtWidgets.QMainWindow):
             source_path = source_path.replace(sep, seps[0])
         source_p = source_path.split(seps[0])
         add_record(res_type, path, description, theme, source_p[1], tags)
-        self.show_all_records()
+        self.show_all_records(cur_user.active)
         self.go_back()
 
     def new_record(self):
@@ -255,7 +254,7 @@ class Window(QtWidgets.QMainWindow):
         self.ui.sourceSearch.clear()
         qdate = QtCore.QDate.fromString("01.01.2000", "dd.MM.yyyy")
         self.ui.dateSearch.setDate(qdate)
-        self.show_all_records()
+        self.show_all_records(cur_user.active)
 
     def back_from_theme(self):
         self.ui.label.hide()
@@ -282,26 +281,39 @@ class StartWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(config.app_name)
         self.ui.registrationPushButton.clicked.connect(self.registration_page)
         self.ui.entrancePushButton.clicked.connect(self.enter)
-        self.ui.registrationPushButton_2.clicked.connect(self.register)
+        self.ui.signUpButton.clicked.connect(self.register)
+        self.ui.pushButton.clicked.connect(self.go_back)
 
     def registration_page(self):
         self.ui.stackedWidget.setCurrentIndex(1)
+
+    def go_back(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.emailLineEditReg.clear()
+        self.ui.nameLineEdit.clear()
+        self.ui.passwordLineEditReg.clear()
+        self.ui.passwordCheckReg.clear()
 
     def enter(self):
         email = self.ui.emailLineEdit.text()
         password = self.ui.passwordLineEdit.text()
         user = get_user_by_email(email)
         orig_hash = get_pass_hash(user)
-        if pbkdf2_sha256.verify(password, orig_hash):
+        try: 
+            pbkdf2_sha256.verify(password, orig_hash)
+        except ValueError:
+            pass
+        else:
             cur_user.set_user(user)
+        finally:
             self.ui.emailLineEdit.clear()
             self.ui.passwordLineEdit.clear()
 
     def register(self):
         name = self.ui.nameLineEdit.text()
-        email = self.ui.emailLineEdit_2.text()
-        password = self.ui.passwordLineEdit_2.text()
-        password_check = self.ui.password2LineEdit.text()
+        email = self.ui.emailLineEditReg.text()
+        password = self.ui.passwordLineEditReg.text()
+        password_check = self.ui.passwordCheckReg.text()
 
         # ПРОВЕРКА ПОЧТЫ НА ВАЛИДНОСТЬ
         check_email = 0
