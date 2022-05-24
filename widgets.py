@@ -4,7 +4,7 @@ from record import Record
 
 
 class ThemeWidget(QtWidgets.QFrame):
-    '''Виджет темы'''
+    '''Виджет темы в списке'''
     def __init__(self, parent = None):
         super(ThemeWidget, self).__init__(parent)
         self.setStyleSheet("border: 1px solid #5E5EEC; \n"
@@ -20,7 +20,7 @@ class ThemeWidget(QtWidgets.QFrame):
 
 
 class RecordWidget(QtWidgets.QFrame):
-    '''Виджет записи'''
+    '''Виджет записи в списке'''
     def __init__ (self, parent = None):
         super(RecordWidget, self).__init__(parent)
         font = QtGui.QFont()
@@ -100,7 +100,14 @@ class BindedRecordWidget(RecordWidget):
         self.setTextTags(self.datas.tags)
 
 
-class TagsHolder(QtWidgets.QLineEdit):
-     def __init__(self, parent = None):
-        super(TagsHolder, self).__init__(parent)
-        self.label = QtWidgets.QLabel()
+def reconnect(signal, newhandler=None, oldhandler=None):        
+    try:
+        if oldhandler is not None:
+            while True:
+                signal.disconnect(oldhandler)
+        else:
+            signal.disconnect()
+    except TypeError:
+        pass
+    if newhandler is not None:
+        signal.connect(newhandler)

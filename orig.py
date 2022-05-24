@@ -601,4 +601,4 @@ class Ui_MainWindow(object):
         self.descriptionSearch.setPlaceholderText(_translate("MainWindow", "Описание"))
         self.sourceSearch.setPlaceholderText(_translate("MainWindow", "Источник"))
         self.applyButton.setText(_translate("MainWindow", "Применить"))
-        self.pushButton.setText(_translate("MainWindow", "Очистить"))
+        self.pushButton.setText(_translate("MainWindow", "Очистить поиск"))

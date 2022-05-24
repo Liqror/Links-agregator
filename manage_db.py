@@ -1,9 +1,9 @@
 import sqlite3
-from types import NoneType
 from config import config
 
 
 def connector(func):
+    '''Декоратор для соединения с базой данных по мере необходимости'''
     def wrapper(*args, **kwargs):
         conn = sqlite3.connect(config.dbase)
         conn.execute('''PRAGMA foreign_keys = on''')
@@ -21,6 +21,7 @@ def connector(func):
 
 @connector
 def create_db(conn):
+    '''Создание базы данных, если её не существует'''
     cur = conn.cursor()
 
     cur.execute('''CREATE TABLE IF NOT EXISTS USERS
@@ -48,13 +49,14 @@ def create_db(conn):
          
     cur.execute('''CREATE TABLE IF NOT EXISTS TAGS
         (ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        NAME            TEXT);''')
+        NAME            TEXT UNIQUE NOT NULL);''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS RECORDS
         (RESOURCE INTEGER,
         TAG       INTEGER,
         FOREIGN KEY (RESOURCE) REFERENCES RESOURCES(ID) ON DELETE CASCADE,
-        FOREIGN KEY (TAG) REFERENCES TAGS(ID));''')
+        FOREIGN KEY (TAG) REFERENCES TAGS(ID),
+        UNIQUE(RESOURCE, TAG));''')
 
     cur.execute('''CREATE TABLE IF NOT EXISTS ACTIVE_USER
         (id INTEGER PRIMARY KEY CHECK (id = 1),
@@ -81,6 +83,7 @@ def get_active_user_name(conn):
     cur.execute(f'''SELECT NAME FROM USERS WHERE ID = {user}''')
     name = cur.fetchone()
     return name[0]
+
 
 @connector
 def get_user_name(conn, user):
@@ -109,7 +112,7 @@ def match_user(conn, email, password):
 @connector
 def add_user(conn, name, email, password):
     cur = conn.cursor()
-    cur.execute('''INSERT INTO USERS (NAME, EMAIL, PASSWORD) VALUES (?, ?, ?)''', (name, email, password))
+    cur.execute('''INSERT OR IGNORE INTO USERS (NAME, EMAIL, PASSWORD) VALUES (?, ?, ?)''', (name, email, password))
     cur.execute('''SELECT seq FROM sqlite_sequence WHERE name = "USERS"''')
     last = cur.fetchone()
     cur.execute('''INSERT OR IGNORE INTO THEMES (USER, NAME) VALUES (?, ?)''', (last[0], "Без темы"))
@@ -137,8 +140,8 @@ def add_theme(conn, user, name):
 @connector
 def add_tag(conn, name):
     cur = conn.cursor()
-    cur.execute('''INSERT INTO TAGS (NAME) VALUES (?)''', (name, ))
-    cur.execute('''SELECT seq FROM sqlite_sequence WHERE name = "TAGS"''')
+    cur.execute('''INSERT OR IGNORE INTO TAGS (NAME) VALUES (?)''', (name, ))
+    cur.execute('''SELECT ID FROM TAGS WHERE NAME = ?''', (name, ))
     last = cur.fetchone()
     return last[0]
 
@@ -157,6 +160,43 @@ def add_record(conn, tpe, path, description, theme, source = " ", tags = None):
             tag_id = tag_id[0]
         cur.execute('''INSERT INTO RECORDS (RESOURCE, TAG) VALUES (?, ?)''', (resource_id, tag_id))
         conn.commit()
+
+
+@connector
+def get_tag_id(conn, tag):
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM TAGS WHERE NAME = ?", (tag, ))
+    tag_id = cur.fetchone()
+    print(f"TAG TO DELETE: {tag_id}")
+    return tag_id[0]
+
+
+@connector
+def delete_tag_from_record(conn, res_id, tag):
+    cur = conn.cursor()
+    cur.execute('''DELETE FROM RECORDS WHERE RESOURCE = ? AND TAG = ?''', (res_id, tag))
+
+
+@connector
+def update_resource(conn, res_id, res_type, path, description, theme, source):
+    cur = conn.cursor()
+    cur.execute('''UPDATE RESOURCES SET TYPE = ?, PATH = ?, DESCRIPTION = ?, THEME = ?, SOURCE = ? WHERE ID = ?''',
+    (res_type, path, description, theme, source, res_id))
+
+
+@connector
+def update_record(conn, res_id: int, tpe: str, path: str, description: str, theme: int, source: str, old_tags: list[str], tags: list[str]):
+    update_resource(res_id, tpe, path, description, theme, source)
+    tags_to_delete = set(old_tags) - set(tags)
+    tags_to_add = set(tags) - set(old_tags)
+    cur = conn.cursor()
+    for tag in tags_to_add:
+        tag_id = add_tag(tag)
+        cur.execute('''INSERT OR IGNORE INTO RECORDS (RESOURCE, TAG) VALUES (?, ?)''', (res_id, tag_id))
+        conn.commit()
+    for tag in tags_to_delete:
+        tag_id = get_tag_id(tag)
+        delete_tag_from_record(res_id, tag_id)
 
 
 @connector
@@ -186,7 +226,7 @@ def load_user_themes(conn, user):
     cur = conn.cursor()
     cur.execute(f'''SELECT * FROM THEMES WHERE USER = {user}''')
     themes = cur.fetchall()
-    if themes is NoneType:
+    if themes is None:
         return []
     return themes
 
@@ -332,6 +372,4 @@ def search(user: int, res_type: str|None, theme: str|None, desc: str|None, sourc
     return rows
 
 
-
-#config.set_user(1)
 create_db()

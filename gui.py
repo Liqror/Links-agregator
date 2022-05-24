@@ -6,23 +6,39 @@ from reg import Ui_MainWindow as Ui_StartWindow
 from user import cur_user
 from config import config
 from manage_db import *
-from widgets import ThemeWidget, BindedRecordWidget
+from widgets import ThemeWidget, BindedRecordWidget, reconnect
 
 
 class Window(QtWidgets.QMainWindow):
     '''
-    Главное окно:
+    Главное окно.
 
     Аттрибуты:
     view: список записей;
     themes_view: список тем;
+    all_records_shown: булево значение, показывающее, должны ли сейчас отображаться все записи или избранные (тема, поиск);
+    cur_theme: заголовок, сообщающий, откуда показываются записи (все, из темы, результаты поиска);
+    datas: данные последней открытой записи, используются для обновления данных;
+
 
     Методы:
-    show_records: показать список всех записей аккаунта;
+    show_records: показать список определённых записей аккаунта;
+    show_all_records: показать список всех записей аккаунта;
     show_themes: показать список всех тем аккаунта;
+    add_theme_frame: показать поле добавления темы;
+    add_new_theme: добавить тему;
+    hide_add_theme: спрятать поле добавления темы;
+    theme_clicked: показать записи в теме при нажатии на неё;
+    refresh_theme_combobox: обновить список доступных при сохранении записи тем;
     item_clicked: показать подробную информацию о записи;
+    update_record: обновить данные записи;
+    apply_search: выполнить поиск;
+    clear_search: очистить поля поиска;
     go_back: вернуться на главную;
+    save_new_record: сохранить новую запись;
     new_record: перейти к созданию записи;
+    back_from_theme: вернуться к списку всех записей;
+    exit_account: выйти из аккаунта;
     '''
     def __init__(self):
         super(Window, self).__init__()
@@ -38,6 +54,7 @@ class Window(QtWidgets.QMainWindow):
         self.show_all_records(cur_user.active)
         self.all_records_shown = True
         self.cur_theme = config.library_name
+        self.datas = None
         self.view.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.ui.stackedWidget.insertWidget(0, self.view)
         self.ui.stackedWidget.insertWidget(1, self.ui.widget)
@@ -57,13 +74,16 @@ class Window(QtWidgets.QMainWindow):
         self.ui.newLinkButton.clicked.connect(self.new_record)
         self.ui.exitAccButton.clicked.connect(self.exit_account)
         self.ui.plus.clicked.connect(self.add_theme_frame)
-        self.ui.label.clicked.connect(self.show_all_records)
         self.ui.label.clicked.connect(self.back_from_theme)
         self.ui.applyButton.clicked.connect(self.apply_search)
         self.ui.pushButton.clicked.connect(self.clear_search)
+        self.ui.backPushButton.clicked.connect(self.go_back)
+        self.ui.cancelThemeButton.clicked.connect(self.hide_add_theme)
+        self.ui.saveThemeButton.clicked.connect(self.add_new_theme)
 
     def show_records(self, rows):
         self.view.clear()
+        self.ui.nameOfLayout.setText(self.cur_theme)
         self.view.setStyleSheet("""
         QScrollBar:vertical {
             border-radius:5px;
@@ -101,7 +121,6 @@ class Window(QtWidgets.QMainWindow):
 
     def show_all_records(self, user):
         self.cur_theme = config.library_name
-        self.ui.nameOfLayout.setText(self.cur_theme)
         self.all_records_shown = True
         rows = load_user_records(user)
         self.show_records(rows)
@@ -147,8 +166,6 @@ class Window(QtWidgets.QMainWindow):
 
     def add_theme_frame(self):
         self.ui.addThemeFrame.show()
-        self.ui.cancelThemeButton.clicked.connect(self.hide_add_theme)
-        self.ui.saveThemeButton.clicked.connect(self.add_new_theme)
     
     def add_new_theme(self):
         theme = self.ui.lineEdit.text()
@@ -163,7 +180,6 @@ class Window(QtWidgets.QMainWindow):
         cur_row = self.themes_view.currentRow()
         theme_data = self.themes_view.item(cur_row).data(QtCore.Qt.UserRole)
         self.cur_theme = theme_data[2]
-        self.ui.nameOfLayout.setText(self.cur_theme)
         rows = load_theme_records(theme_data[0])
         self.show_records(rows)
         self.ui.label.show()
@@ -177,19 +193,19 @@ class Window(QtWidgets.QMainWindow):
     def item_clicked(self):
         self.ui.label.hide()
         cur_row = self.view.currentRow()
-        datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
-        self.types_button[datas.type].setChecked(True)
+        self.datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
+        self.types_button[self.datas.type].setChecked(True)
         self.refresh_theme_combobox()
-        self.ui.themeComboBox.setCurrentText(datas.theme)
-        self.ui.linkLineEdit.setText(datas.path)
-        self.ui.descriptionTextEdit.setText(datas.description)
-        self.ui.nameOfLayout.setText(datas.date)
+        self.ui.themeComboBox.setCurrentText(self.datas.theme)
+        self.ui.linkLineEdit.setText(self.datas.path)
+        self.ui.descriptionTextEdit.setText(self.datas.description)
+        self.ui.nameOfLayout.setText(self.datas.date)
         tags = ""
-        for tag in datas.tags:
+        for tag in self.datas.tags:
             tags = tags + tag[1] + " "
         self.ui.tagsLineEdit.setText(tags)
         self.ui.stackedWidget.setCurrentIndex(1)
-        self.ui.backPushButton.clicked.connect(self.go_back)
+        self.ui.savePushButton.clicked.connect(self.update_record)
 
     def go_back(self):
         if not self.all_records_shown:
@@ -202,6 +218,7 @@ class Window(QtWidgets.QMainWindow):
         self.ui.linkLineEdit.clear()
         self.ui.descriptionTextEdit.clear()
         self.ui.tagsLineEdit.clear()
+        reconnect(self.ui.savePushButton, None, None)
 
     def save_new_record(self):
         path = self.ui.linkLineEdit.text()
@@ -215,6 +232,9 @@ class Window(QtWidgets.QMainWindow):
         source_path = path
         for sep in seps[1:]:
             source_path = source_path.replace(sep, seps[0])
+        #TODO: проверить, что ссылка path валидна (файл существует на компьютере, ссылка может куда-то вести в интернете)
+        #Если нет, то вывести сообщение об ошибке и выйти из функции
+        #Если да, то следующие четыре строки кода (выделить источник, добавить запись, вернуться к списку записей)
         source_p = source_path.split(seps[0])
         add_record(res_type, path, description, theme, source_p[1], tags)
         self.show_all_records(cur_user.active)
@@ -227,8 +247,30 @@ class Window(QtWidgets.QMainWindow):
         if not self.all_records_shown:
             self.ui.themeComboBox.setCurrentText(self.ui.nameOfLayout.text())
         self.ui.stackedWidget.setCurrentIndex(1)
-        self.ui.backPushButton.clicked.connect(self.go_back)
         self.ui.savePushButton.clicked.connect(self.save_new_record)
+
+    def update_record(self):
+        old_tags = [old_tag[1] for old_tag in self.datas.tags]
+        res_id = self.datas.id
+        path = self.ui.linkLineEdit.text()
+        description = self.ui.descriptionTextEdit.toPlainText()
+        theme = get_theme_id(cur_user.active, self.ui.themeComboBox.currentText())
+        tags = self.ui.tagsLineEdit.text().split()
+        for res, button in self.types_button.items():
+            if button.isChecked():
+                res_type = res
+                break
+        seps = [".", "://", ":/", ":\\",  "|", "/", ":", "\\", " "]
+        source_path = path
+        for sep in seps[1:]:
+            source_path = source_path.replace(sep, seps[0])
+        #TODO: проверить, что ссылка path валидна (файл существует на компьютере, ссылка может куда-то вести в интернете)
+        #Если нет, то вывести сообщение об ошибке и выйти из функции
+        #Если да, то следующие четыре строки кода (выделить источник, обновить запись, вернуться к списку записей)
+        source_p = source_path.split(seps[0])
+        update_record(res_id, res_type, path, description, theme, source_p[1], old_tags, tags)
+        self.show_all_records(cur_user.active)
+        self.go_back()
 
     def apply_search(self):
         res_type = self.types_search[self.ui.resourceType.currentText()]
@@ -242,8 +284,8 @@ class Window(QtWidgets.QMainWindow):
         if not desc: desc = None
         if not source: source = None
         if res_date == "2000-01-01": res_date = None
-        print(cur_user.active, res_type, theme, desc, source, res_date, tags)
         rows = search(cur_user.active, res_type, theme, desc, source, res_date, tags)
+        self.cur_theme = config.search_name
         self.show_records(rows)
 
     def clear_search(self):
@@ -258,6 +300,7 @@ class Window(QtWidgets.QMainWindow):
 
     def back_from_theme(self):
         self.ui.label.hide()
+        self.show_all_records(cur_user.active)
         self.ui.nameOfLayout.setText(config.library_name)
 
     def exit_account(self):
