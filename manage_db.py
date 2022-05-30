@@ -200,9 +200,9 @@ def update_record(conn, res_id: int, tpe: str, path: str, description: str, them
 
 
 @connector
-def delete_record(conn, table, row_id):
+def delete_record(conn, row_id):
     cur = conn.cursor()
-    cur.execute(f'''DELETE FROM {table} WHERE ID = {row_id}''')
+    cur.execute(f'''DELETE FROM RESOURCES WHERE ID = {row_id}''')
 
 
 @connector

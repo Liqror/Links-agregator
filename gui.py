@@ -13,10 +13,10 @@ from widgets import ThemeWidget, BindedRecordWidget, reconnect
 def show_error(text):
     """Shows popup error window"""
     err = QtWidgets.QMessageBox()
-    err.setIcon(QtWidgets.QMessageBox.Critical)
+    err.setIcon(QtWidgets.QMessageBox.Warning)
     err.setText("Ошибка ввода")
     err.setInformativeText(text)
-    err.setWindowTitle("Ошибка")
+    err.setWindowTitle("Предупреждение")
     err.exec_()
 
 
@@ -72,9 +72,9 @@ class Window(QtWidgets.QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
         self.themes_view = QtWidgets.QListWidget()
         self.show_themes(cur_user.active)
+        self.ui.deleteButton.hide()
         self.ui.label.hide()
         self.ui.addThemeFrame.hide()
-        self.ui.linkFrame.hide()
         self.types_button = {"link": self.ui.linkButton, "doc": self.ui.dockButton, "image": self.ui.imgButton}
         self.types_search = {"Тип ресурса": None, "Ссылка": "link", "Документ": "doc", "Изображение": "image"}
         self.ui.userName.setText(get_active_user_name())
@@ -93,6 +93,7 @@ class Window(QtWidgets.QMainWindow):
         self.ui.saveThemeButton.clicked.connect(self.add_new_theme)
         self.ui.descriptionTextEdit.setAcceptDrops(True)
         self.ui.linkLineEdit.setAcceptDrops(True)
+        self.ui.deleteButton.clicked.connect(self.delete_item)
 
     def show_records(self, rows):
         self.view.clear()
@@ -205,6 +206,7 @@ class Window(QtWidgets.QMainWindow):
 
     def item_clicked(self):
         self.ui.label.hide()
+        self.ui.deleteButton.show()
         cur_row = self.view.currentRow()
         self.datas = self.view.item(cur_row).data(QtCore.Qt.UserRole)
         self.types_button[self.datas.type].setChecked(True)
@@ -221,6 +223,7 @@ class Window(QtWidgets.QMainWindow):
         self.ui.savePushButton.clicked.connect(self.update_record)
 
     def go_back(self):
+        self.ui.deleteButton.hide()
         if not self.all_records_shown:
             self.ui.label.show()
         self.ui.nameOfLayout.setText(self.cur_theme)
@@ -259,8 +262,7 @@ class Window(QtWidgets.QMainWindow):
 
     def new_record(self):
         self.ui.label.hide()
-        themes = [theme[2] for theme in load_user_themes(cur_user.active)]
-        self.ui.themeComboBox.addItems(themes)
+        self.refresh_theme_combobox()
         if not self.all_records_shown:
             self.ui.themeComboBox.setCurrentText(self.ui.nameOfLayout.text())
         self.ui.stackedWidget.setCurrentIndex(1)
@@ -292,6 +294,11 @@ class Window(QtWidgets.QMainWindow):
         else:
             self.show_all_records(cur_user.active)
             self.go_back()
+
+    def delete_item(self):
+        delete_record(self.datas.id)
+        self.show_all_records(cur_user.active)
+        self.go_back()
 
     def apply_search(self):
         res_type = self.types_search[self.ui.resourceType.currentText()]
@@ -355,13 +362,30 @@ class StartWindow(QtWidgets.QMainWindow):
 
     def registration_page(self):
         self.ui.stackedWidget.setCurrentIndex(1)
+        self.clear_login_page()
 
-    def go_back(self):
-        self.ui.stackedWidget.setCurrentIndex(0)
+    def show_signup_error(self):
+        self.ui.messageLabel_2.setText("Для успешной регистрации ваш пароль должен содержать от 4 до 16 символов и быть одинаковым в обоих полях. " +
+            "Почтовый адрес должен быть похожим на реальный и не должен быть уже зарегистрированным в системе.")
+
+    def show_login_error(self):
+        self.ui.messageLabel.setText("Неверный логин или пароль.")
+
+    def clear_registration_page(self):
         self.ui.emailLineEditReg.clear()
         self.ui.nameLineEdit.clear()
         self.ui.passwordLineEditReg.clear()
         self.ui.passwordCheckReg.clear()
+        self.ui.messageLabel_2.clear()
+
+    def clear_login_page(self):
+        self.ui.emailLineEdit.clear()
+        self.ui.passwordLineEdit.clear()
+        self.ui.messageLabel.clear()
+
+    def go_back(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+        self.clear_registration_page()
 
     def enter(self):
         email = self.ui.emailLineEdit.text()
@@ -371,12 +395,12 @@ class StartWindow(QtWidgets.QMainWindow):
         try:
             pbkdf2_sha256.verify(password, orig_hash)
         except ValueError:
-            pass
+            self.show_login_error()
         else:
-            if pbkdf2_sha256.verify(password, orig_hash): cur_user.set_user(user)
-        finally:
-            self.ui.emailLineEdit.clear()
-            self.ui.passwordLineEdit.clear()
+            if pbkdf2_sha256.verify(password, orig_hash): 
+                cur_user.set_user(user)
+                self.clear_login_page()
+            else: self.show_login_error()
 
     def register(self):
         name = self.ui.nameLineEdit.text()
@@ -417,5 +441,8 @@ class StartWindow(QtWidgets.QMainWindow):
             user = add_user(name, email, pass_hash)
             cur_user.set_user(user)
         else:
-            show_error("Для успешной регистрации ваш пароль должен содержать от 4 до 16 символов и быть одинаковым в обоих полях. " +
-            "Почтовый адрес должен быть похожим на реальный и не должен быть уже зарегистрированным в системе.")
+            self.show_signup_error()
+            self.ui.emailLineEditReg.clear()
+            self.ui.nameLineEdit.clear()
+            self.ui.passwordLineEditReg.clear()
+            self.ui.passwordCheckReg.clear()

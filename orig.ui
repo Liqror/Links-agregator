@@ -498,12 +498,16 @@ border-width: 0px;</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="deleteButton">
             <property name="maximumSize">
              <size>
               <width>45</width>
               <height>40</height>
              </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">border-style: outset; 
+border-width: 0px;</string>
             </property>
             <property name="text">
              <string/>
@@ -515,202 +519,13 @@ border-width: 0px;</string>
             <property name="iconSize">
              <size>
               <width>45</width>
-              <height>40</height>
+              <height>38</height>
              </size>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="linkFrame">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>120</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QFrame {background: #5E5EEC;
-border-radius: 20px;}</string>
-         </property>
-         <layout class="QVBoxLayout" name="linkLayout">
-          <item>
-           <layout class="QHBoxLayout" name="linkDescription">
-            <item>
-             <widget class="QLabel" name="themeName_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: rgb(255, 255, 255);</string>
-              </property>
-              <property name="text">
-               <string>Python</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="linksName_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>GitHub Project</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="dateOfCreation_2">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>11</pointsize>
-               </font>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string>20.02.2022</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="descriptionLabel">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background: #A2A2E8;
-border-radius: 0,5 px;</string>
-            </property>
-            <property name="text">
-             <string>Хороший проект, что сказать)</string>
+            <property name="flat">
+             <bool>true</bool>
             </property>
            </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="tagslLayout">
-            <item>
-             <widget class="QLabel" name="tag_3">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background: #A2A2E8;
-border-radius: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Python</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="tag_2">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background: #A2A2E8;
-border-radius: 10px;</string>
-              </property>
-              <property name="text">
-               <string>ВвПД</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="tag">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>10</pointsize>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background: #A2A2E8;
-border-radius: 10px;</string>
-              </property>
-              <property name="text">
-               <string>Desktop</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="tagSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
           </item>
          </layout>
         </widget>
@@ -733,7 +548,7 @@ border-radius: 10px;</string>
                <x>0</x>
                <y>0</y>
                <width>531</width>
-               <height>631</height>
+               <height>741</height>
               </rect>
              </property>
              <property name="sizePolicy">
