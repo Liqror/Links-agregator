@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from passlib.hash import pbkdf2_sha256
 from orig import Ui_MainWindow
@@ -7,6 +8,16 @@ from user import cur_user
 from config import config
 from manage_db import *
 from widgets import ThemeWidget, BindedRecordWidget, reconnect
+
+
+def show_error(text):
+    """Shows popup error window"""
+    err = QtWidgets.QMessageBox()
+    err.setIcon(QtWidgets.QMessageBox.Critical)
+    err.setText("Ошибка ввода")
+    err.setInformativeText(text)
+    err.setWindowTitle("Ошибка")
+    err.exec_()
 
 
 class Window(QtWidgets.QMainWindow):
@@ -80,6 +91,8 @@ class Window(QtWidgets.QMainWindow):
         self.ui.backPushButton.clicked.connect(self.go_back)
         self.ui.cancelThemeButton.clicked.connect(self.hide_add_theme)
         self.ui.saveThemeButton.clicked.connect(self.add_new_theme)
+        self.ui.descriptionTextEdit.setAcceptDrops(True)
+        self.ui.linkLineEdit.setAcceptDrops(True)
 
     def show_records(self, rows):
         self.view.clear()
@@ -236,9 +249,13 @@ class Window(QtWidgets.QMainWindow):
         #Если нет, то вывести сообщение об ошибке и выйти из функции
         #Если да, то следующие четыре строки кода (выделить источник, добавить запись, вернуться к списку записей)
         source_p = source_path.split(seps[0])
-        add_record(res_type, path, description, theme, source_p[1], tags)
-        self.show_all_records(cur_user.active)
-        self.go_back()
+        try:
+            add_record(res_type, path, description, theme, source_p[1], tags)
+        except (UnboundLocalError, IndexError):
+            show_error("Убедитесь, что вы выбрали тип ресурса и верно заполнили поле для ссылки.")
+        else:
+            self.show_all_records(cur_user.active)
+            self.go_back()
 
     def new_record(self):
         self.ui.label.hide()
@@ -268,9 +285,13 @@ class Window(QtWidgets.QMainWindow):
         #Если нет, то вывести сообщение об ошибке и выйти из функции
         #Если да, то следующие четыре строки кода (выделить источник, обновить запись, вернуться к списку записей)
         source_p = source_path.split(seps[0])
-        update_record(res_id, res_type, path, description, theme, source_p[1], old_tags, tags)
-        self.show_all_records(cur_user.active)
-        self.go_back()
+        try:
+            update_record(res_id, res_type, path, description, theme, source_p[1], old_tags, tags)
+        except (UnboundLocalError, IndexError):
+            show_error("Убедитесь, что вы выбрали тип ресурса и верно заполнили поле для ссылки.")
+        else:
+            self.show_all_records(cur_user.active)
+            self.go_back()
 
     def apply_search(self):
         res_type = self.types_search[self.ui.resourceType.currentText()]
@@ -302,6 +323,11 @@ class Window(QtWidgets.QMainWindow):
         self.ui.label.hide()
         self.show_all_records(cur_user.active)
         self.ui.nameOfLayout.setText(config.library_name)
+
+    def pictureDropped(self, l):
+        for url in l:
+            if os.path.exists(url):
+                self.ui.linkLineEdit.setText(url)
 
     def exit_account(self):
         cur_user.set_user(0)
@@ -342,12 +368,12 @@ class StartWindow(QtWidgets.QMainWindow):
         password = self.ui.passwordLineEdit.text()
         user = get_user_by_email(email)
         orig_hash = get_pass_hash(user)
-        try: 
+        try:
             pbkdf2_sha256.verify(password, orig_hash)
         except ValueError:
             pass
         else:
-            cur_user.set_user(user)
+            if pbkdf2_sha256.verify(password, orig_hash): cur_user.set_user(user)
         finally:
             self.ui.emailLineEdit.clear()
             self.ui.passwordLineEdit.clear()
@@ -386,7 +412,10 @@ class StartWindow(QtWidgets.QMainWindow):
         if Count_for_letter_1 != 0 and Count_for_letter_2 != 0 and error == 0:
             check_email = 1
 
-        if password == password_check and 4 <= len(password) <= 16 and check_email == 1:
+        if password == password_check and 4 <= len(password) <= 16 and check_email == 1 and get_user_by_email(email) == 0:
             pass_hash = pbkdf2_sha256.hash(password)
             user = add_user(name, email, pass_hash)
             cur_user.set_user(user)
+        else:
+            show_error("Для успешной регистрации ваш пароль должен содержать от 4 до 16 символов и быть одинаковым в обоих полях. " +
+            "Почтовый адрес должен быть похожим на реальный и не должен быть уже зарегистрированным в системе.")
