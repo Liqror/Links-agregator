@@ -1,9 +1,10 @@
+from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 from record import Record
 
 
 class ThemeWidget(QtWidgets.QFrame):
-    '''Виджет темы'''
+    '''Виджет темы в списке'''
     def __init__(self, parent = None):
         super(ThemeWidget, self).__init__(parent)
         self.setStyleSheet("border: 1px solid #5E5EEC; \n"
@@ -19,7 +20,7 @@ class ThemeWidget(QtWidgets.QFrame):
 
 
 class RecordWidget(QtWidgets.QFrame):
-    '''Виджет записи'''
+    '''Виджет записи в списке'''
     def __init__ (self, parent = None):
         super(RecordWidget, self).__init__(parent)
         font = QtGui.QFont()
@@ -28,7 +29,6 @@ class RecordWidget(QtWidgets.QFrame):
         self.setFont(font)
         self.textQVBoxLayout = QtWidgets.QVBoxLayout()
         self.textUpQLabel = QtWidgets.QLabel()
-        self.textDownQLabel = QtWidgets.QLabel()
         self.textTags = QtWidgets.QHBoxLayout()
         self.textSource = QtWidgets.QLabel()
         self.textDate = QtWidgets.QLabel()
@@ -36,8 +36,13 @@ class RecordWidget(QtWidgets.QFrame):
         self.entryData.addWidget(self.textUpQLabel)
         self.entryData.addWidget(self.textSource)
         self.entryData.addWidget(self.textDate)
-        self.deskLab = QtWidgets.QLabel()
-        self.deskLab.setWordWrap(True)
+        self.deskLab = QtWidgets.QLineEdit()
+        self.deskLab.setEnabled(False)
+        self.deskLab.setStyleSheet("color: black")
+        for lab in self.deskLab, self.textUpQLabel, self.textSource, self.textDate:
+            lab.setFont(self.font())
+        font.setPointSize(10)
+        self.deskLab.setFont(font)
         self.textQVBoxLayout.addLayout(self.entryData)
         self.textQVBoxLayout.addWidget(self.deskLab)
         self.textQVBoxLayout.addLayout(self.textTags)
@@ -59,6 +64,7 @@ class RecordWidget(QtWidgets.QFrame):
 
     def setTextDescription(self, text):
         self.deskLab.setText(text)
+        self.deskLab.setCursorPosition(0)
 
     def setTextTags(self, tags):
         for tag_text in tags:
@@ -69,6 +75,7 @@ class RecordWidget(QtWidgets.QFrame):
             self.labl.setContentsMargins(2, 2, 2, 2)
             self.labl.setAlignment(QtCore.Qt.AlignCenter)
             self.labl.setText(tag_text[1])
+            self.labl.setFont(self.font())
             self.textTags.addWidget(self.labl)
         if not tags:
             labl = QtWidgets.QLabel()
@@ -84,6 +91,7 @@ class BindedRecordWidget(RecordWidget):
         super(BindedRecordWidget, self).__init__()
         self.ui = RecordWidget()
         self.datas = Record.from_database(reid)
+        self.datas.date = datetime.strptime(self.datas.date, "%Y-%m-%d %H:%M:%S").strftime("%d.%m.%Y %H:%M")
         self.datas.set_tags()
         self.setTextUp(self.datas.theme)
         self.setTextSource(self.datas.source)
@@ -92,7 +100,14 @@ class BindedRecordWidget(RecordWidget):
         self.setTextTags(self.datas.tags)
 
 
-class TagsHolder(QtWidgets.QLineEdit):
-     def __init__(self, parent = None):
-        super(TagsHolder, self).__init__(parent)
-        self.label = QtWidgets.QLabel()
+def reconnect(signal, newhandler=None, oldhandler=None):        
+    try:
+        if oldhandler is not None:
+            while True:
+                signal.disconnect(oldhandler)
+        else:
+            signal.disconnect()
+    except TypeError:
+        pass
+    if newhandler is not None:
+        signal.connect(newhandler)

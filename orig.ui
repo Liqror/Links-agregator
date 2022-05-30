@@ -217,15 +217,12 @@ color: rgb(255, 255, 255);</string>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="plas">
+              <widget class="QPushButton" name="plus">
                <property name="maximumSize">
                 <size>
                  <width>30</width>
                  <height>30</height>
                 </size>
-               </property>
-               <property name="focusPolicy">
-                <enum>Qt::WheelFocus</enum>
                </property>
                <property name="styleSheet">
                 <string notr="true">background: #5E5EEC;
@@ -235,11 +232,126 @@ color: rgb(255, 255, 255);</string>
                <property name="text">
                 <string/>
                </property>
-               <property name="pixmap">
-                <pixmap>Pic/другой плюс.png</pixmap>
+               <property name="icon">
+                <iconset>
+                 <normaloff>Pic/другой плюс.png</normaloff>Pic/другой плюс.png</iconset>
                </property>
-               <property name="scaledContents">
-                <bool>true</bool>
+               <property name="iconSize">
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="addThemeFrame">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>100</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background: #A2A2E8;
+border-radius: 5px;</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="horizontalFrame">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>40</height>
+             </size>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="cancelThemeButton">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: #5E5EEC;
+border-radius: 5px;
+color: rgb(255, 255, 255);</string>
+               </property>
+               <property name="text">
+                <string>Отмена</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>5</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="saveThemeButton">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: #5E5EEC;
+border-radius: 5px;
+color: rgb(255, 255, 255);</string>
+               </property>
+               <property name="text">
+                <string>Сохранить</string>
                </property>
               </widget>
              </item>
@@ -304,23 +416,42 @@ color: rgb(255, 255, 255);</string>
            <enum>QLayout::SetMaximumSize</enum>
           </property>
           <item>
-           <widget class="QLabel" name="label">
+           <widget class="QPushButton" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="maximumSize">
              <size>
               <width>40</width>
               <height>40</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">border-style: outset; 
+border-width: 0px;</string>
+            </property>
             <property name="text">
              <string/>
             </property>
-            <property name="textFormat">
-             <enum>Qt::AutoText</enum>
+            <property name="icon">
+             <iconset>
+              <normaloff>Pic/стрелка назад для темы2.jpg</normaloff>
+              <normalon>Pic/стрелка назад для темы2.jpg</normalon>
+              <activeoff>Pic/стрелка назад для темы2.jpg</activeoff>
+              <activeon>Pic/стрелка назад для темы2.jpg</activeon>
+              <selectedoff>Pic/стрелка назад для темы2.jpg</selectedoff>
+              <selectedon>Pic/стрелка назад для темы2.jpg</selectedon>Pic/стрелка назад для темы2.jpg</iconset>
             </property>
-            <property name="pixmap">
-             <pixmap>Pic/стрелка назад для темы2.jpg</pixmap>
+            <property name="iconSize">
+             <size>
+              <width>40</width>
+              <height>40</height>
+             </size>
             </property>
-            <property name="scaledContents">
+            <property name="flat">
              <bool>true</bool>
             </property>
            </widget>
@@ -1098,7 +1229,7 @@ border-radius: 12px;
 color: rgb(255, 255, 255);</string>
          </property>
          <property name="text">
-          <string>Очистить</string>
+          <string>Очистить поиск</string>
          </property>
         </widget>
        </item>
