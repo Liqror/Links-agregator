@@ -22,7 +22,7 @@ def main():
     app = QtWidgets.QApplication([])
     application = Window()
     login = StartWindow()
-    cur_user.register_callback(application.show_records)
+    cur_user.register_callback(application.show_all_records)
     cur_user.register_callback(application.show_themes)
     cur_user.register_callback(lambda user: open_main(user, application, login))
     if cur_user.active == 0:
