@@ -9,7 +9,7 @@ def connector(func):
         conn.execute('''PRAGMA foreign_keys = on''')
         try:
             res = func(conn, *args, **kwargs)
-        except KeyboardInterrupt:
+        except Exception:
             conn.rollback()
         else:
             conn.commit()
@@ -113,7 +113,7 @@ def match_user(conn, email, password):
 def add_user(conn, name, email, password):
     cur = conn.cursor()
     cur.execute('''INSERT OR IGNORE INTO USERS (NAME, EMAIL, PASSWORD) VALUES (?, ?, ?)''', (name, email, password))
-    cur.execute('''SELECT seq FROM sqlite_sequence WHERE name = "USERS"''')
+    cur.execute('''SELECT ID FROM USERS WHERE EMAIL = ?''', (email, ))
     last = cur.fetchone()
     cur.execute('''INSERT OR IGNORE INTO THEMES (USER, NAME) VALUES (?, ?)''', (last[0], "Без темы"))
     return last[0]
@@ -211,6 +211,7 @@ def load_table(conn, table):
     cur.execute(f'''SELECT * FROM {table}''')
     rows = cur.fetchall()
     return rows
+
 
 @connector
 def load_row(conn, res_id):

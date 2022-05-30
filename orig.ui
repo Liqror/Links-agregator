@@ -963,7 +963,7 @@ border-radius: 5px;</string>
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap>Pic/еще одна лупа.jpg</pixmap>
+            <pixmap>Pic/лупа.jpg</pixmap>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -1016,14 +1016,15 @@ border-radius: 10px;
          </property>
          <property name="styleSheet">
           <string notr="true">QComboBox {
-	background: #A2A2E8;
-	border-radius: 10px;
-	padding-left: 90px;
-	
-	selection-background-color: ;
-}
-QComboBox QAbstractItemView {background-color: #A2A2E8}
-</string>
+            background: #A2A2E8;
+            border-radius: 10px;
+            padding-left: 90px;
+
+        }
+QComboBox QAbstractItemView {
+			padding-left: 90px;
+            background-color: rgb(162, 162, 232)
+        }</string>
          </property>
          <property name="currentText">
           <string>Тип ресурса</string>
