@@ -9,7 +9,7 @@ def connector(func):
         conn.execute('''PRAGMA foreign_keys = on''')
         try:
             res = func(conn, *args, **kwargs)
-        except Exception:
+        except KeyboardInterrupt:
             conn.rollback()
         else:
             conn.commit()
@@ -206,6 +206,22 @@ def delete_record(conn, row_id):
 
 
 @connector
+def delete_theme(conn, theme_id):
+    cur = conn.cursor()
+    cur.execute(f'''DELETE FROM THEMES WHERE ID = {theme_id}''')
+
+
+@connector
+def check_if_theme_empty(conn,theme_id):
+    cur = conn.cursor()
+    cur.execute(f'''SELECT * FROM RESOURCES WHERE THEME = {theme_id}''')
+    res = cur.fetchone()
+    if res is None:
+        return True
+    return False
+
+
+@connector
 def load_table(conn, table):
     cur = conn.cursor()
     cur.execute(f'''SELECT * FROM {table}''')
@@ -263,6 +279,7 @@ def get_theme_id(conn, user, theme_name):
     if theme_id is None:
         return 0
     return theme_id[0]
+
 
 @connector
 def get_pass_hash(conn, user):
@@ -371,6 +388,3 @@ def search(user: int, res_type: str|None, theme: str|None, desc: str|None, sourc
             results.append(set(func(arg)))
     rows = set.intersection(*results)
     return rows
-
-
-create_db()

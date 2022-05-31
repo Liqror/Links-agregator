@@ -2,7 +2,7 @@ import sys
 from PyQt5 import QtWidgets
 from user import cur_user
 from gui import Window, StartWindow
-from manage_db import set_active_user, get_active_user
+from manage_db import set_active_user, get_active_user, create_db
 
 
 def open_main(user, application, login):
@@ -18,6 +18,7 @@ cur_user.register_callback(set_active_user)
 
 
 def main():
+    create_db()
     cur_user.active = get_active_user()
     app = QtWidgets.QApplication([])
     application = Window()

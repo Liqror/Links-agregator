@@ -1,11 +1,12 @@
 from datetime import datetime
 from PyQt5 import QtWidgets, QtGui, QtCore
 from record import Record
+from manage_db import delete_theme, check_if_theme_empty
 
 
 class ThemeWidget(QtWidgets.QFrame):
     '''Виджет темы в списке'''
-    def __init__(self, parent = None):
+    def __init__(self, theme_id, theme_name, parent = None):
         super(ThemeWidget, self).__init__(parent)
         self.setStyleSheet("border: 1px solid #5E5EEC; \n"
                            "border-color: #5E5EEC;\n"
@@ -14,9 +15,24 @@ class ThemeWidget(QtWidgets.QFrame):
         self.textTheme = QtWidgets.QLabel()
         self.textQHBox.addWidget(self.textTheme)
         self.setLayout(self.textQHBox)
+        self.id = theme_id
+        self.name = theme_name
+        self.deleteTheme = QtWidgets.QAction("Удалить", self)
+        self.deleteTheme.triggered.connect(self.delete_item)
+        self.setThemeName(self.name)
+
+    #def contextMenuEvent(self, event):
+        #menu = QtWidgets.QMenu(self)
+        #menu.addAction(self.deleteTheme)
+        #if check_if_theme_empty(self.id):
+        #   self.deleteTheme.setEnabled(False)
+        #menu.exec(event.globalPos())
 
     def setThemeName(self, text):
-        self.textTheme.setText(str(text))
+        self.textTheme.setText(text)
+
+    def delete_item(self):
+        delete_theme(self.id)
 
 
 class RecordWidget(QtWidgets.QFrame):

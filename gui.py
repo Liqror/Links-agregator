@@ -170,14 +170,17 @@ class Window(QtWidgets.QMainWindow):
         }
         """)
         for theme in themes:
-            wid = ThemeWidget()
-            wid.setThemeName(theme[2])
+            wid = ThemeWidget(theme[0], theme[2])
+            wid.deleteTheme.triggered.connect(self.show_cur_user_themes)
             item = QtWidgets.QListWidgetItem(self.themes_view)
             item.setSizeHint(wid.sizeHint())
             item.setData(QtCore.Qt.UserRole, theme)
             self.themes_view.addItem(item)
             self.themes_view.setItemWidget(item, wid)
 
+    def show_cur_user_themes(self):
+        self.show_themes(cur_user.active)
+    
     def add_theme_frame(self):
         self.ui.addThemeFrame.show()
     
@@ -440,9 +443,6 @@ class StartWindow(QtWidgets.QMainWindow):
             pass_hash = pbkdf2_sha256.hash(password)
             user = add_user(name, email, pass_hash)
             cur_user.set_user(user)
+            self.go_back()
         else:
             self.show_signup_error()
-            self.ui.emailLineEditReg.clear()
-            self.ui.nameLineEdit.clear()
-            self.ui.passwordLineEditReg.clear()
-            self.ui.passwordCheckReg.clear()
